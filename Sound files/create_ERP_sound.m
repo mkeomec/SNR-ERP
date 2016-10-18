@@ -22,6 +22,11 @@ function create_ERP_sound(subid, audiogram)
 % 5. Create Sound Stimuli
 % 6. Create Noise Stimuli
 
+% 0. Import audiogram
+
+
+audio=readtable('audiograms.csv')
+rows = audio.subject_id==subid
 
 % 1. Import sound files
 
