@@ -61,8 +61,8 @@ noiseSNR15=noise65db*(db2amp(SPL30-80));
 % 6. Output sound files
 subjectid=num2str(subid)
 audiowrite(strcat(subjectid,'stim.wav'),stim65db,10000)
-audiowrite(strcat(subjectid,'noiseSNR_5.wav'),noiseSNR_5,44100)
-audiowrite(strcat(subjectid,'noiseSNR0.wav'),noiseSNR0,44100)
-audiowrite(strcat(subjectid,'noiseSNR5.wav'),noiseSNR5,44100)
-audiowrite(strcat(subjectid,'noiseSNR10.wav'),noiseSNR10,44100)
-audiowrite(strcat(subjectid,'noiseSNR15.wav'),noiseSNR15,44100)
+audiowrite(strcat(subjectid,'SNRnoise_5.wav'),noiseSNR_5,44100)
+audiowrite(strcat(subjectid,'SNRnoise0.wav'),noiseSNR0,44100)
+audiowrite(strcat(subjectid,'SNRnoise5.wav'),noiseSNR5,44100)
+audiowrite(strcat(subjectid,'SNRnoise10.wav'),noiseSNR10,44100)
+audiowrite(strcat(subjectid,'SNRnoise15.wav'),noiseSNR15,44100)
