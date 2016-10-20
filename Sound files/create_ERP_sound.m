@@ -1,4 +1,4 @@
-function create_ERP_sound(subid, transducer)
+function create_ERP_sound(subid)
 
 % This function receives audiogram information and outputs appropriate
 % sound files for the SNR-ERP study, Project AE. Sound intensity is
@@ -28,6 +28,8 @@ audio=readtable('audiograms.csv');
 rows = audio.subject_id==subid;
 audiogram=audio(rows,:);
 audiogram=[audiogram.right_air_conduction_500 audiogram.right_air_conduction_1000 audiogram.right_air_conduction_2000 audiogram.left_air_conduction_500 audiogram.left_air_conduction_1000 audiogram.left_air_conduction_2000]
+transducer=audio.Transducer (rows,:)
+transducer=transducer{1}
 % 1. Import sound files
 
 noise65db=audioread('Noise65.wav');
@@ -41,11 +43,15 @@ PTA=mean(mean(audiogram,2))
 PTA30=PTA+30
 
 switch transducer
-    case 1
+    case 'TDH-50'
         SPL30=PTA30+7.5
     
-    case 2
-        SPL30=PTA30    
+    case 'ER3'
+        SPL30=PTA30   
+        
+    case 'Headphones'
+        SPL30=PTA30+7.5
+        
 end
 
 % 4. Create sound stimuli 
