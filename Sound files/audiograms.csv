@@ -1,6 +1,5 @@
 subject_id,Transducer,right_air_conduction_250,right_air_conduction_500,right_air_conduction_750,right_air_conduction_1000,right_air_conduction_1500,right_air_conduction_2000,right_air_conduction_3000,right_air_conduction_4000,right_air_conduction_6000,right_air_conduction_8000,left_air_conduction_250,left_air_conduction_500,left_air_conduction_750,left_air_conduction_1000,left_air_conduction_1500,left_air_conduction_2000,left_air_conduction_3000,left_air_conduction_4000,left_air_conduction_6000,left_air_conduction_8000,audiometry_air_conduction_complete
-1000,,,,,,,,,,,,,,,,,,,,,,0
-1006,,25,25,,30,40,50,55,50,70,75,20,25,,35,50,55,55,60,65,75,1
+1006,?,25,25,,30,40,50,55,50,70,75,20,25,,35,50,55,55,60,65,75,1
 1010,???,30,30,,55,,40,,40,40,35,30,30,,55,,45,,45,35,25,2
 1012,ER3,40,45,,50,,65,,70,70,70,40,45,,50,,60,,60,65,70,2
 1013,ER3,15,25,,45,,55,,45,35,35,5,20,,35,,45,,50,40,45,2

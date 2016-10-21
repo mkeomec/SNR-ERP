@@ -1,4 +1,4 @@
-function create_ERP_sound(subid)
+function [SPL30,subjectid]=create_ERP_sound(subid)
 
 % This function receives audiogram information and outputs appropriate
 % sound files for the SNR-ERP study, Project AE. Sound intensity is
@@ -51,6 +51,10 @@ switch transducer
         
     case 'Headphones'
         SPL30=PTA30+7.5
+        
+    case ''
+        SPL30=PTA30
+%   ASSUMPTION: if no transducer information is available, assume inserts. 
         
 end
 
