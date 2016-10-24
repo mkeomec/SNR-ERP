@@ -22,7 +22,7 @@ function varargout = volume(varargin)
 
 % Edit the above text to modify the response to help volume
 
-% Last Modified by GUIDE v2.5 21-Oct-2016 11:15:00
+% Last Modified by GUIDE v2.5 21-Oct-2016 13:27:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -101,8 +101,12 @@ function volumeup_Callback(hObject, eventdata, handles)
 % hObject    handle to volumeup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-volumechange=get(handles.volume, 'String');
-handles.sound=handles.sound*(db2amp(volumechange));
+volumechange=get(handles.volume, 'String')
+figure
+plot(handles.sound)
+handles.sound=handles.sound*(db2amp(str2num(volumechange)));
+figure
+plot(handles.sound)
 guidata(hObject, handles);
 msgbox('Volume Up')
 
@@ -112,7 +116,12 @@ function volumedown_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 volumechange=get(handles.volume, 'String');
-handles.sound=handles.sound*(db2amp(-volumechange));
+figure
+plot(handles.sound)
+-db2amp(str2num(volumechange))
+handles.sound=handles.sound*(db2amp(-(str2num(volumechange))));
+figure
+plot(handles.sound)
 guidata(hObject, handles);
 msgbox('Volume Down')
 
@@ -221,6 +230,8 @@ handles.subjectid
 % get(handles.SPL, 'String')
 strcat(handles.subjectid,'stim.wav')
 handles.sound=audioread(strcat(handles.subjectid,'stim.wav'));
+handles.filename=strcat(handles.subjectid,'stim.wav')
+handles.hz=10000
 guidata(hObject, handles);
 set(handles.targetspl, 'String', handles.SPL);
 
@@ -232,6 +243,8 @@ function SNR_5_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of SNR_5
 handles.sound=audioread(strcat(handles.subjectid,'SNRnoise_5.wav'));
+handles.filename=strcat(handles.subjectid,'SNRnoise_5.wav')
+handles.hz=44100
 guidata(hObject, handles);
 set(handles.targetspl, 'String', handles.SPL+5);
 
@@ -242,8 +255,11 @@ function SNR0_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of SNR0
-handles.sound=audioread(strcat(handles.subjectid,'SNRnoise0.wav'))       ;
+handles.sound=audioread(strcat(handles.subjectid,'SNRnoise0.wav'));
+handles.filename=strcat(handles.subjectid,'SNRnoise0.wav')
+handles.hz=44100
 guidata(hObject, handles);
+
 set(handles.targetspl, 'String', handles.SPL);
 
 % --- Executes on button press in SNR5.
@@ -254,6 +270,8 @@ function SNR5_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of SNR5
 handles.sound=audioread(strcat(handles.subjectid,'SNRnoise5.wav'));
+handles.filename=strcat(handles.subjectid,'SNRnoise5.wav')
+handles.hz=44100
 guidata(hObject, handles);
 set(handles.targetspl, 'String', handles.SPL-5);
 
@@ -265,6 +283,8 @@ function SNR10_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of SNR10
 handles.sound=audioread(strcat(handles.subjectid,'SNRnoise10.wav'));
+handles.filename=strcat(handles.subjectid,'SNRnoise10.wav')
+handles.hz=44100
 guidata(hObject, handles);
 set(handles.targetspl, 'String', handles.SPL-10);
 % --- Executes on button press in SNR15.
@@ -276,6 +296,8 @@ function SNR15_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of SNR15
 handles.sound=audioread(strcat(handles.subjectid,'SNRnoise15.wav'));
+handles.filename=strcat(handles.subjectid,'SNRnoise15.wav')
+handles.hz=44100
 guidata(hObject, handles);
 set(handles.targetspl, 'String', handles.SPL-15);
 
@@ -338,3 +360,14 @@ function PTA30_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in savefile.
+function savefile_Callback(hObject, eventdata, handles)
+% hObject    handle to savefile (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.filename
+audiowrite(handles.filename,handles.sound,handles.hz)
+msgbox('Saved')
+
