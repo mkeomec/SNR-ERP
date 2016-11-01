@@ -17,8 +17,8 @@ cfg.output       = 'pow';
 cfg.channel      = 'all';
 cfg.method       = 'mtmconvol';
 cfg.taper        = 'hanning';
-cfg.toi          = [0 : 1 : 1200];
-cfg.foi          = 1:.5:20;
+cfg.toi          = [0 : 5 : 1000];
+cfg.foi          = 0:.2:20;
 cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
 TFRhann = ft_freqanalysis(cfg, data_eeg);
 
@@ -29,7 +29,7 @@ cfg = [];
 cfg.baselinetype = 'absolute';  
 % cfg.maskstyle    = 'saturation';	
 cfg.zlim         = [0 50];	        
-cfg.channel      = 'IO2';
+cfg.channel      = 'PZ';
  
 figure;
 ft_singleplotTFR(cfg, TFRhann);
@@ -53,14 +53,14 @@ ft_singleplotTFR(cfg, TFRhann);
 
 
 % Topo plot of Alpha power
-
-cfg = [];
-cfg.baseline     = [-0.5 -0.1];	
-cfg.baselinetype = 'absolute';
-cfg.xlim         = [88 208];   
-cfg.zlim         = [-1.5e-27 1.5e-27];
-cfg.ylim         = [7 12.5];
-cfg.marker       = 'on';
-% cfg.layout       = 'Neuroscan65.elp';
-figure 
-ft_topoplotTFR(cfg, TFRhann);
+% 
+% cfg = [];
+% cfg.baseline     = [-0.5 -0.1];	
+% cfg.baselinetype = 'absolute';
+% cfg.xlim         = [88 208];   
+% cfg.zlim         = [-1.5e-27 1.5e-27];
+% cfg.ylim         = [7 12.5];
+% cfg.marker       = 'on';
+% % cfg.layout       = 'Neuroscan65.elp';
+% figure 
+% ft_topoplotTFR(cfg, TFRhann);
