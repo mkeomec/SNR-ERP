@@ -1,16 +1,63 @@
 function alphapower
 
-% Preprocessing: Reference channel set to Cz. 
+% Define Trial 
 
 cfg = [];
-cfg.dataset     = '1016_KDT_09_30_2016.cnt';
-cfg.reref       = 'yes';
+cfg.dataset = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.trialfun = 'ft_trialfun_general'; % this is the default
+cfg.trialdef.eventtype  = 'trigger'; %speify event type
+%cfg.trialdef.evetvalue  = '22'; %specify trigger value; this doesn't seem
+%to be needed or i'm using it incorrectly: result is the same whether it is
+%used or not
+%cfg.trl = cfg.trialdef.triallength;
+data_eeg = ft_definetrial(cfg);
+
+
+%% Artifact Rejection (Auto)
+
+% muscle
+cfg = [];
+cfg.dataset     = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.continuous = 'yes';
+cfg.trl = 'data_eeg.trl';
+% channel selection, cutoff and padding
+% the current values are based off the Fieldtrip tutorials
+cfg.artfctdef.zvalue.channel = 'all';
+cfg.artfctdef.zvalue.cutoff = 4;
+cfg.artfctdef.zvalue.trlpadding  = 0;
+cfg.artfctdef.zvalue.fltpadding  = 0;
+cfg.artfctdef.zvalue.artpadding  = 0.1;
+%parameters
+% the current values are based off the Fieldtrip tutorials
+cfg.artifctdef.zvalue.bpfilter = 'yes';
+cfg.artfctdef.zvalue.bpfreq = [110 140];
+cfg.artfctdef.zvalue.bpfiltord   = 9;
+cfg.artfctdef.zvalue.bpfilttype  = 'but';
+cfg.artfctdef.zvalue.hilbert     = 'yes';
+cfg.artfctdef.zvalue.boxcar      = 0.2;
+%gui
+%cfg.artfctdef.zvalue.interactive = 'yes'; %activates gui to manualy
+%accept/reject and/or change threshold; doesn't work currently :(
+
+data_eeg = ft_artifact_zvalue(cfg);
+
+
+%% Preprocessing: Reference channel set to Cz. 
+cfg = [];
+cfg.dataset = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.continuous  = 'yes';
 cfg.channel     = 'all';
+%cfg.trl = 'data_eeg.trl'
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [.5 50];  
+cfg.reref       = 'yes';
+cfg.refmethod     = 'avg'
 cfg.implicitref = 'Cz';            % the implicit (non-recorded) reference channel is added to the data representation
 cfg.refchannel     = {'Cz', '65'}; % the average of these channels is used as the new reference, note that channel '53' corresponds to the right mastoid (M2)
 data_eeg        = ft_preprocessing(cfg);
 
-% Frequency analysis
+  
+%% Frequency analysis
 
 cfg              = [];
 cfg.output       = 'pow'; 
@@ -42,11 +89,6 @@ ft_singleplotTFR(cfg, TFRhann);
 % % cfg.layout       = 'CTF151.lay';
 % figure 
 % ft_multiplotTFR(cfg, TFRhann);
-
-
-
-
-
 
 
 
