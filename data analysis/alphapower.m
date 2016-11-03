@@ -3,15 +3,26 @@ function alphapower
 
 % Create layout in Fieldtrip
 
-
-
-
-
-% Preprocessing: Reference channel set to Cz. 
-
+% Visualize EEG data in data browser
 cfg = [];
-cfg.dataset     = '1016_KDT_09_30_2016.cnt';
-cfg.reref       = 'yes';
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
+cfg.channel = 'EEG';
+cfg.viewmode = 'vertical';
+cfg.blocksize = 1;                             % Length of data to display, in seconds
+cfg.preproc.demean = 'yes';                    % Demean the data before display
+cfg.ylim = [-46 46];
+ 
+ft_databrowser(cfg);
+ 
+set(gcf, 'Position',[1 1 1200 800])
+print -dpng natmeg_databrowser2.png
+
+
+% % Preprocessing: Reference channel set to Cz. 
+% 
+% cfg = [];
+% cfg.dataset     = '1016_KDT_09_30_2016.cnt';
+% cfg.reref       = 'yes';
 
 % Define Trial 
 
