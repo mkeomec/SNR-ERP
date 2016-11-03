@@ -1,6 +1,6 @@
 function alphapower
 
-<<<<<<< HEAD
+
 % Create layout in Fieldtrip
 
 
@@ -10,18 +10,18 @@ function alphapower
 % Preprocessing: Reference channel set to Cz. 
 
 cfg = [];
-cfg.dataset     = '1063_KDT_10_27_2016.cnt';
+cfg.dataset     = '1016_KDT_09_30_2016.cnt';
 cfg.reref       = 'yes';
-=======
+
 % Define Trial 
 
 cfg = [];
-cfg.dataset = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
 cfg.trialfun = 'ft_trialfun_general'; % this is the default
-cfg.trialdef.eventtype  = 'trigger'; %speify event type
-%cfg.trialdef.evetvalue  = '22'; %specify trigger value; this doesn't seem
+cfg.trialdef.eventtype  = 'trigger'; %specify event type
+cfg.trialdef.eventvalue  = 20; %specify trigger value; this doesn't seem
 %to be needed or i'm using it incorrectly: result is the same whether it is
-%used or not
+%used or not  ML: Fixed. Had a typo. 
 %cfg.trl = cfg.trialdef.triallength;
 data_eeg = ft_definetrial(cfg);
 
@@ -30,7 +30,7 @@ data_eeg = ft_definetrial(cfg);
 
 % muscle
 cfg = [];
-cfg.dataset     = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.dataset     = '1016_KDT_09_30_2016.cnt';
 cfg.continuous = 'yes';
 cfg.trl = 'data_eeg.trl';
 % channel selection, cutoff and padding
@@ -54,12 +54,14 @@ cfg.artfctdef.zvalue.boxcar      = 0.2;
 
 data_eeg = ft_artifact_zvalue(cfg);
 
+% TO-DO. Specify only portions of the trial to exclude. 
+%  cfg.artfctdef.minaccepttim 
+
 
 %% Preprocessing: Reference channel set to Cz. 
 cfg = [];
-cfg.dataset = 'C:\Users\Michael\Google Drive\Project AE_SNR EEG ERP\Data\1016\1016_KDT_09_30_2016.cnt';
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
 cfg.continuous  = 'yes';
->>>>>>> origin/master
 cfg.channel     = 'all';
 %cfg.trl = 'data_eeg.trl'
 cfg.bpfilter = 'yes';
