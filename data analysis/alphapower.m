@@ -36,7 +36,18 @@ cfg.trialdef.prestim=0
 %to be needed or i'm using it incorrectly: result is the same whether it is
 %used or not  ML: Fixed. Had a typo. 
 %cfg.trl = cfg.trialdef.triallength;
-data_eeg = ft_definetrial(cfg);
+cfg = ft_definetrial(cfg);
+trl=cfg.trl
+
+cfg.trl = trl; 			% saved somewhere previously
+cfg.dataset = '1016_KDT_09_30_2016.cnt';  	% data file, you might also need to add the path to it 
+trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
+
+
+
+
+
+
 
 
 %% Artifact Rejection (Auto)
