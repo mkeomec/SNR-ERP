@@ -51,9 +51,7 @@ ic_data = ft_componentanalysis (cfg,trialdata);
 cfg = [];
 cfg.viewmode = 'component';
 cfg.continuous = 'yes';
-cfg.blocksize = 1;
-cfg.channels = [1:10];
-ft_databrowser(cfg,ic_data);
+cfg.blocksize = '
 
 
 %% Artifact Rejection (Auto)
