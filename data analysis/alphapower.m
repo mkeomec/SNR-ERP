@@ -30,7 +30,9 @@ cfg = [];
 cfg.dataset = '1016_KDT_09_30_2016.cnt';
 cfg.trialfun = 'ft_trialfun_general'; % this is the default
 cfg.trialdef.eventtype  = 'trigger'; %specify event type
-cfg.trialdef.eventvalue  = 20; %specify trigger value; this doesn't seem
+cfg.trialdef.eventvalue  = 22; %specify trigger value; this doesn't seem
+cfg.trialdef.poststim=120
+cfg.trialdef.prestim=0
 %to be needed or i'm using it incorrectly: result is the same whether it is
 %used or not  ML: Fixed. Had a typo. 
 %cfg.trl = cfg.trialdef.triallength;
@@ -67,6 +69,39 @@ data_eeg = ft_artifact_zvalue(cfg);
 
 % TO-DO. Specify only portions of the trial to exclude. 
 %  cfg.artfctdef.minaccepttim 
+
+% EOG Artifact rejection
+   cfg            = [];
+   cfg.trl        = 'data_eeg.trl'
+   cfg.datafile   = '1016_KDT_09_30_2016.cnt';
+   cfg.headerfile = '1016_KDT_09_30_2016.cnt';
+   cfg.continuous = 'yes'; 
+ 
+   % channel selection, cutoff and padding
+   cfg.artfctdef.zvalue.channel     = 'EEG';
+   cfg.artfctdef.zvalue.cutoff      = 4;
+   cfg.artfctdef.zvalue.trlpadding  = 0;
+   cfg.artfctdef.zvalue.artpadding  = 0.1;
+   cfg.artfctdef.zvalue.fltpadding  = 0;
+ 
+   % algorithmic parameters
+   cfg.artfctdef.zvalue.bpfilter   = 'yes';
+   cfg.artfctdef.zvalue.bpfilttype = 'but';
+   cfg.artfctdef.zvalue.bpfreq     = [1 15];
+   cfg.artfctdef.zvalue.bpfiltord  = 4;
+   cfg.artfctdef.zvalue.hilbert    = 'yes';
+ 
+   % feedback
+   cfg.artfctdef.zvalue.interactive = 'yes';
+ 
+   [cfg, artifact_EOG] = ft_artifact_zvalue(cfg);
+
+
+
+
+
+
+
 
 
 %% Preprocessing: Reference channel set to Cz. 
