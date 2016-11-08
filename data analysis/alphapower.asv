@@ -3,18 +3,18 @@ function alphapower
 % Create layout in Fieldtrip
 
 %% Visualize EEG data in data browser
-cfg = [];
-cfg.dataset = '1016_KDT_09_30_2016.cnt';
-cfg.channel = 'EEG';
-cfg.viewmode = 'vertical';
-cfg.blocksize = 1;                             % Length of data to display, in seconds
-cfg.preproc.demean = 'yes';                    % Demean the data before display
-cfg.ylim = [-46 46];
- 
-ft_databrowser(cfg);
- 
-set(gcf, 'Position',[1 1 1200 800])
-print -dpng natmeg_databrowser2.png
+% cfg = [];
+% cfg.dataset = '1061_KDT_10_24_2016.cnt';
+% cfg.channel = 'EEG';
+% cfg.viewmode = 'vertical';
+% cfg.blocksize = 1;                             % Length of data to display, in seconds
+% cfg.preproc.demean = 'yes';                    % Demean the data before display
+% cfg.ylim = [-46 46];
+%  
+% ft_databrowser(cfg);
+%  
+% set(gcf, 'Position',[1 1 1200 800])
+% print -dpng natmeg_databrowser2.png
 
 
 %% Preprocessing: Reference channel set to Cz. 
@@ -26,7 +26,7 @@ print -dpng natmeg_databrowser2.png
 % %% Define trial
 % 
 cfg = [];
-cfg.dataset = '1016_AAT_09_30_2016.cnt';
+cfg.dataset = '1063_KDT_10_27_2016.cnt';
 cfg.trialfun = 'ft_trialfun_general'; % this is the default
 cfg.trialdef.eventtype  = 'trigger'; %specify event type
 cfg.trialdef.eventvalue  = 22; %specify trigger value;
@@ -42,7 +42,7 @@ data_eeg        = ft_preprocessing(cfg);
 trl=cfg.trl
 
 cfg.trl=trl
-cfg.dataset = '1016_AAT_09_30_2016.cnt';
+cfg.dataset = '1063_KDT_10_27_2016.cnt';
 trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
 
 %% Downsample to 250
@@ -65,7 +65,12 @@ cfg.channels = [1:10];
 ft_databrowser(cfg,ic_data);
 
 cfg = [];
-cfg.component = [3 8 9 19 32];
+% cfg.component = [3 8 9 19 32];
+% cfg.component = [12];
+% cfg.component = [2];
+% cfg.component = [34];
+cfg.component = [22];
+% cfg.component = [6 14];
 data_iccleaned = ft_rejectcomponent(cfg, ic_data);
 
 % %% Artifact Detection (Auto)
@@ -178,7 +183,7 @@ cfg = [];
 cfg.baselinetype = 'absolute';  
 % cfg.maskstyle    = 'saturation';	
 cfg.zlim         = [0 25];	        
-cfg.channel      = 'OZ';
+cfg.channel      = 'O1';
  
 figure;
 ft_singleplotTFR(cfg, TFRhann);
@@ -207,3 +212,14 @@ ft_topoplotTFR(cfg, TFRhann);
   cfg.output       = 'pow';
    
   FFT    = ft_freqanalysis(cfg, data_iccleaned);
+  
+  
+%% Calculate area under the curve Alpha power from FFT
+
+FFT.powspctrm
+Oz_AOC=trapz(FFT.powspctrm(31,15:25))
+O1_AOC=trapz(FFT.powspctrm(10,15:25))
+O2_AOC=trapz(FFT.powspctrm(9,15:25))
+plot(FFT.powspctrm')
+  
+  
