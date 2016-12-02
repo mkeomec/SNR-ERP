@@ -1,4 +1,4 @@
-function alphapower()
+function alphapower
 
     %  TO-DO
     % -Create layout in Fieldtrip
