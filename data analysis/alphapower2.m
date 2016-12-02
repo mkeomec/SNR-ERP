@@ -3,18 +3,18 @@ function alphapower
 % Create layout in Fieldtrip
 
 %% Visualize EEG data in data browser
-% cfg = [];
-% cfg.dataset = '1061_KDT_10_24_2016.cnt';
-% cfg.channel = 'EEG';
-% cfg.viewmode = 'vertical';
-% cfg.blocksize = 1;                             % Length of data to display, in seconds
-% cfg.preproc.demean = 'yes';                    % Demean the data before display
-% cfg.ylim = [-46 46];
-%  
-% ft_databrowser(cfg);
-%  
-% set(gcf, 'Position',[1 1 1200 800])
-% print -dpng natmeg_databrowser2.png
+cfg = [];
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
+cfg.channel = 'EEG';
+cfg.viewmode = 'vertical';
+cfg.blocksize = 1;                             % Length of data to display, in seconds
+cfg.preproc.demean = 'yes';                    % Demean the data before display
+cfg.ylim = [-46 46];
+ 
+ft_databrowser(cfg);
+ 
+set(gcf, 'Position',[1 1 1200 800])
+print -dpng natmeg_databrowser2.png
 
 
 %% Preprocessing: Reference channel set to Cz. 
@@ -23,10 +23,41 @@ function alphapower
 % cfg.dataset     = '1016_KDT_09_30_2016.cnt';
 % cfg.reref       = 'yes';
 
+
 % %% Define trial
 % 
+% cfg = [];
+% cfg.dataset = '1016_KDT_09_30_2016.cnt';
+% cfg.trialfun = 'ft_trialfun_general'; % this is the default
+% cfg.trialdef.eventtype  = 'trigger'; %specify event type
+% cfg.trialdef.eventvalue  = 22; %specify trigger value;
+% cfg.trialdef.poststim=120
+% cfg.trialdef.prestim=0
+% %cfg.trl = cfg.trialdef.triallength;
+% cfg = ft_definetrial(cfg);
+% trl=cfg.trl
+% 
+% cfg.trl = trl; 			% saved somewhere previously
+% trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
+% 
+% 
+% %% Preprocessing: Reference channel set to Cz. 
+% cfg = [];
+% cfg.dataset = '1016_KDT_09_30_2016.cnt';
+% cfg.continuous  = 'yes';
+% cfg.channel     = 'all';
+% %cfg.trl = 'data_eeg.trl'
+% cfg.bpfilter = 'yes';
+% cfg.bpfreq = [.5 50];  
+% cfg.reref       = 'yes';
+% cfg.refmethod     = 'avg'
+% cfg.implicitref = 'Cz';            % the implicit (non-recorded) reference channel is added to the data representation
+% cfg.refchannel     = {'Cz', '65'}; % the average of these channels is used as the new reference, note that channel '53' corresponds to the right mastoid (M2)
+% data_eeg        = ft_preprocessing(cfg);
+
+%% Define Trial
 cfg = [];
-cfg.dataset = '1063_KDT_10_27_2016.cnt';
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
 cfg.trialfun = 'ft_trialfun_general'; % this is the default
 cfg.trialdef.eventtype  = 'trigger'; %specify event type
 cfg.trialdef.eventvalue  = 22; %specify trigger value;
@@ -34,29 +65,38 @@ cfg.trialdef.poststim=120
 cfg.trialdef.prestim=0
 %cfg.trl = cfg.trialdef.triallength;
 cfg = ft_definetrial(cfg);
-cfg.continuous  = 'yes';
-cfg.channel     = 'all';
-cfg.bpfilter = 'yes';
-cfg.bpfreq = [.5 50];  
-data_eeg        = ft_preprocessing(cfg);
+
 trl=cfg.trl
 
-cfg.trl=trl
-cfg.dataset = '1063_KDT_10_27_2016.cnt';
-trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
+trialdata = ft_preprocessing(cfg)
+
+% Preprocessing: Reference channel set to Cz. 
+
+cfg = [];
+cfg.dataset = '1016_KDT_09_30_2016.cnt';
+cfg.channel     = 'all';
+%cfg.trl = 'data_eeg.trl'
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [.5 50];  
+cfg.reref       = 'yes';
+cfg.refmethod     = 'avg'
+cfg.implicitref = 'Cz';            % the implicit (non-recorded) reference channel is added to the data representation
+cfg.refchannel     = {'Cz', '65'}; % the average of these channels is used as the new reference, note that channel '53' corresponds to the right mastoid (M2)
+data_eeg        = ft_preprocessing(cfg);
+
 
 %% Downsample to 250
-trialdata_orig = trialdata; %save the original data for later use
+data_orig = data_eeg; %save the original data for later use
 cfg            = [];
 cfg.resamplefs = 250;
 cfg.detrend    = 'no';
-trialdata           = ft_resampledata(cfg, trialdata);
+data_eeg           = ft_resampledata(cfg, data_eeg);
 %% ICA
 
 cfg = [];
-cfg.channel = 'EEG';
-ic_data = ft_componentanalysis (cfg,trialdata);
-cfg = [];
+cfg.method  = 'runica'
+ic_data = ft_componentanalysis (cfg,data_eeg);
+
 cfg.viewmode = 'component';
 cfg.continuous = 'yes';
 cfg.layout = 'quickcap64.mat';
@@ -64,14 +104,6 @@ cfg.blocksize = 1;
 cfg.channels = [1:10];
 ft_databrowser(cfg,ic_data);
 
-cfg = [];
-% cfg.component = [3 8 9 19 32];
-% cfg.component = [12];
-% cfg.component = [2];
-% cfg.component = [34];
-cfg.component = [22];
-% cfg.component = [6 14];
-data_iccleaned = ft_rejectcomponent(cfg, ic_data);
 
 % %% Artifact Detection (Auto)
 % 
@@ -153,29 +185,47 @@ data_iccleaned = ft_rejectcomponent(cfg, ic_data);
 
 %% Artifact Rejection
 
-% cfg=[]; 
-% cfg.artfctdef.reject = 'partial'; % this rejects complete trials, use 'partial' if you want to do partial artifact rejection
-% cfg.artfctdef.eog.artifact = artifact_EOG; % 
-% % cfg.artfctdef.jump.artifact = artifact_jump;
-% cfg.artfctdef.muscle.artifact = artifact_muscle;
-% data_no_artifacts = ft_rejectartifact(cfg,data_eeg);
+cfg=[]; 
+cfg.artfctdef.reject = 'partial'; % this rejects complete trials, use 'partial' if you want to do partial artifact rejection
+cfg.artfctdef.eog.artifact = artifact_EOG; % 
+% cfg.artfctdef.jump.artifact = artifact_jump;
+cfg.artfctdef.muscle.artifact = artifact_muscle;
+data_no_artifacts = ft_rejectartifact(cfg,data_eeg);
 
+%% Merge "trials" together: DOES NOT WORK
+% data.merge = ft_appenddata(cfg, data_no_artifacts)
 
+%% Define Trial 
+
+cfg = [];
+cfg.dataset = data_no_artifacts;
+cfg.trialfun = 'ft_trialfun_general'; % this is the default
+cfg.trialdef.eventtype  = 'trigger'; %specify event type
+cfg.trialdef.eventvalue  = 22; %specify trigger value;
+cfg.trialdef.poststim=120
+cfg.trialdef.prestim=0
+%cfg.trl = cfg.trialdef.triallength;
+cfg = ft_definetrial(cfg);
+trl=cfg.trl
+
+cfg.trl = trl; 			% saved somewhere previously
+trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
 
 
   
-%% Frequency analysis over time
+%% Frequency analysis
 
 cfg              = [];
-cfg.trials       = 'all'
+cfg.trials       = 1:369
 cfg.output       = 'pow'; 
 cfg.channel      = 'all';
 cfg.method       = 'mtmconvol';
 cfg.taper        = 'hanning';
-cfg.toi          = [0 : 1 : 120];
-cfg.foi          = 0:.5:20;
+cfg.toi          = [0 : 5 : 120];
+cfg.foi          = 0:1:20;
 cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
-TFRhann = ft_freqanalysis(cfg, data_iccleaned);
+TFRhann = ft_freqanalysis(cfg, data_no_artifacts);
+
 
 % Plot single channel
 cfg = [];
@@ -183,16 +233,17 @@ cfg = [];
 cfg.baselinetype = 'absolute';  
 % cfg.maskstyle    = 'saturation';	
 cfg.zlim         = [0 25];	        
-cfg.channel      = 'O1';
+cfg.channel      = 'OZ';
  
 figure;
 ft_singleplotTFR(cfg, TFRhann);
- 
+
+% 
 cfg = [];
 % cfg.baseline     = [-0.5 -0.1]; 
 % cfg.baselinetype = 'absolute'; 
 cfg.xlim         = [1 360];   
-cfg.zlim         = [0 20];	
+cfg.zlim         = [0 10];	
 cfg.ylim         = [7.5 12.5];
 cfg.marker       = 'on';
 cfg.showlabels   = 'yes';	
@@ -201,25 +252,18 @@ figure
 % ft_multiplotTFR(cfg, TFRhann);
 ft_topoplotTFR(cfg, TFRhann);
 
-%% Frequency Analysis per trial
-  cfg = [];
-  cfg.foi          = [1:30]; 
-  cfg.tapsmofrq    = 1
-  cfg.taper        = 'hanning';
-  cfg.channel      = 'all';
-  cfg.trials       = 'all'
-  cfg.method       = 'mtmfft';
-  cfg.output       = 'pow';
-   
-  FFT    = ft_freqanalysis(cfg, data_iccleaned);
-  
-  
-%% Calculate area under the curve Alpha power from FFT
 
-FFT.powspctrm
-Oz_AOC=trapz(FFT.powspctrm(31,15:25))
-O1_AOC=trapz(FFT.powspctrm(10,15:25))
-O2_AOC=trapz(FFT.powspctrm(9,15:25))
-plot(FFT.powspctrm')
-  
-  
+
+
+% Topo plot of Alpha power
+% 
+% cfg = [];
+% cfg.baseline     = [-0.5 -0.1];	
+% cfg.baselinetype = 'absolute';
+% cfg.xlim         = [88 208];   
+% cfg.zlim         = [-1.5e-27 1.5e-27];
+% cfg.ylim         = [7 12.5];
+% cfg.marker       = 'on';
+% % cfg.layout       = 'Neuroscan65.elp';
+% figure 
+% ft_topoplotTFR(cfg, TFRhann);
