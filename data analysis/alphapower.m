@@ -58,15 +58,21 @@ for i=1:length(subid)
     cfg.trialdef.prestim=0
     %cfg.trl = cfg.trialdef.triallength;
     cfg = ft_definetrial(cfg);
-    cfg.continuous  = 'yes';
-    cfg.channel     = 'all';
-    cfg.bpfilter = 'yes';
-    cfg.bpfreq = [.5 50];  
-    data_eeg        = ft_preprocessing(cfg);
+%     cfg.continuous  = 'yes';
+%     cfg.channel     = 'all';
+%     cfg.bpfilter = 'yes';
+%     cfg.bpfreq = [.5 50];  
+    data_eeg  = ft_preprocessing(cfg);
+%     trialdata  = ft_preprocessing(cfg);
     trl=cfg.trl
 
     cfg.trl=trl
     cfg.dataset = dataname{1};
+    cfg.continuous  = 'yes';
+    cfg.channel     = 'all';
+    cfg.bpfilter = 'yes';
+    cfg.bpfreq = [.5 50];  
+%     data_eeg  = ft_preproces
     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
 
     %% Downsample to 250
