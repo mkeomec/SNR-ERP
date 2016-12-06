@@ -33,19 +33,19 @@ for i=1:length(subid)
     
 
 
-    %% Visualize EEG data in data browser
-    % cfg = [];
-    % cfg.dataset = '1061_KDT_10_24_2016.cnt';
-    % cfg.channel = 'EEG';
-    % cfg.viewmode = 'vertical';
-    % cfg.blocksize = 1;                             % Length of data to display, in seconds
-    % cfg.preproc.demean = 'yes';                    % Demean the data before display
-    % cfg.ylim = [-46 46];
-    %  
-    % ft_databrowser(cfg);
-    %  
-    % set(gcf, 'Position',[1 1 1200 800])
-    % print -dpng natmeg_databrowser2.png
+    % Visualize EEG data in data browser
+%     cfg = [];
+%     cfg.dataset = dataname{1};
+%     cfg.channel = 'EEG';
+%     cfg.viewmode = 'vertical';
+%     cfg.blocksize = 1;                             % Length of data to display, in seconds
+%     cfg.preproc.demean = 'yes';                    % Demean the data before display
+%     cfg.ylim = [-46 46];
+%      
+%     ft_databrowser(cfg);
+%      
+%     set(gcf, 'Position',[1 1 1200 800])
+%     print -dpng natmeg_databrowser2.png
 
     %% Define trial
     % 
@@ -74,7 +74,7 @@ for i=1:length(subid)
     cfg.bpfreq = [.5 50];  
 %     data_eeg  = ft_preproces
     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
-
+   
     %% Downsample to 250
     trialdata_orig = trialdata; %save the original data for later use
     cfg            = [];
@@ -93,10 +93,10 @@ for i=1:length(subid)
     cfg.blocksize = 1;
     cfg.channels = [1:10];
     ft_databrowser(cfg,ic_data);
-pause
-
-
-
+    colormap jet
+    ICAfigure=gcf
+    saveas(ICAfigure,strcat(subjectid,'ICA'))
+ pause
     cfg = [];
 
     x = inputdlg('Enter space-separated numbers. ICA components:')
@@ -107,7 +107,6 @@ pause
             % This section needs further development. Want to call ICA from a previous file        
             % x=ICA.mat
         end
-        
 
 
     % cfg.component = [3 8 9 19 32];
@@ -273,4 +272,4 @@ pause
 end
 save ICA.mat ICA
 T=table(O1_AOC,O2_AOC,Oz_AOC,'RowNames',subid)
-writetable(T,alpha.txt)
+writetable(T,strcat(subjectid,'alphapower'))
