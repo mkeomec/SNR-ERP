@@ -102,11 +102,11 @@ function volumeup_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 volumechange=get(handles.volume, 'String')
-figure
-plot(handles.sound)
+% figure
+% plot(handles.sound)
 handles.sound=handles.sound*(db2amp(str2num(volumechange)));
-figure
-plot(handles.sound)
+% figure
+% plot(handles.sound)
 guidata(hObject, handles);
 msgbox('Volume Up')
 
@@ -116,12 +116,12 @@ function volumedown_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 volumechange=get(handles.volume, 'String');
-figure
-plot(handles.sound)
+% figure
+% plot(handles.sound)
 -db2amp(str2num(volumechange))
 handles.sound=handles.sound*(db2amp(-(str2num(volumechange))));
-figure
-plot(handles.sound)
+% figure
+% plot(handles.sound)
 guidata(hObject, handles);
 msgbox('Volume Down')
 
