@@ -47,7 +47,70 @@ for i=1:length(subid)
 %     set(gcf, 'Position',[1 1 1200 800])
 %     print -dpng natmeg_databrowser2.png
 
-    %% Define trial
+%% Original Analysis. 1) Trials established and averaged 2) downsample, 3) ICA. 
+%     %% Define trial
+%     % 
+%     cfg = [];
+%     cfg.dataset = dataname{1};
+%     cfg.trialfun = 'ft_trialfun_general'; % this is the default
+%     cfg.trialdef.eventtype  = 'trigger'; %specify event type
+%     cfg.trialdef.eventvalue  = 22; %specify trigger value;
+%     cfg.trialdef.poststim=120
+%     cfg.trialdef.prestim=0
+%     %cfg.trl = cfg.trialdef.triallength;
+%     cfg = ft_definetrial(cfg);
+% %     cfg.continuous  = 'yes';
+% %     cfg.channel     = 'all';
+% %     cfg.bpfilter = 'yes';
+% %     cfg.bpfreq = [.5 50];  
+%     data_eeg  = ft_preprocessing(cfg);
+% %     trialdata  = ft_preprocessing(cfg);
+%     trl=cfg.trl
+% 
+%     cfg.trl=trl
+%     cfg.dataset = dataname{1};
+%     cfg.continuous  = 'yes';
+%     cfg.channel     = 'all';
+%     cfg.bpfilter = 'yes';
+%     cfg.bpfreq = [.5 50];  
+% %     data_eeg  = ft_preproces
+%     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
+%    
+%     %% Downsample to 250
+%     trialdata_orig = trialdata; %save the original data for later use
+%     cfg            = [];
+%     cfg.resamplefs = 250;
+%     cfg.detrend    = 'no';
+%     trialdata           = ft_resampledata(cfg, trialdata);
+%     %% ICA
+% 
+%     cfg = [];
+%     cfg.channel = 'EEG';
+%     ic_data = ft_componentanalysis (cfg,trialdata);
+%     cfg = [];
+%     cfg.viewmode = 'component';
+%     cfg.continuous = 'yes';
+%     cfg.layout = 'quickcap64.mat';
+%     cfg.blocksize = 1;
+%     cfg.channels = [1:10];
+%     ft_databrowser(cfg,ic_data);
+%     colormap jet
+%     ICAfigure=gcf
+%     saveas(ICAfigure,strcat(subjectid,'ICA'))
+%  pause
+%     cfg = [];
+% 
+%     x = inputdlg('Enter space-separated numbers. ICA components:')
+%         if isempty(x{1,1})==0
+%             cfg.component = str2num(x{:});
+%         else
+%             load(ICA.mat)
+%             % This section needs further development. Want to call ICA from a previous file        
+%             % x=ICA.mat
+%         end
+
+   %% ICA Analysis over entire recording. 1)Trials established, 2)Downsample, 3) ICA, 4) Trials averaged
+%    Define trial
     % 
     cfg = [];
     cfg.dataset = dataname{1};
@@ -66,13 +129,13 @@ for i=1:length(subid)
 %     trialdata  = ft_preprocessing(cfg);
     trl=cfg.trl
 
-    cfg.trl=trl
+%     cfg.trl=trl
+    cfg=[];
     cfg.dataset = dataname{1};
     cfg.continuous  = 'yes';
     cfg.channel     = 'all';
     cfg.bpfilter = 'yes';
     cfg.bpfreq = [.5 50];  
-%     data_eeg  = ft_preproces
     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
    
     %% Downsample to 250
@@ -81,10 +144,12 @@ for i=1:length(subid)
     cfg.resamplefs = 250;
     cfg.detrend    = 'no';
     trialdata           = ft_resampledata(cfg, trialdata);
+    
     %% ICA
 
     cfg = [];
-    cfg.channel = 'EEG';
+%     cfg.channel = {'EEG'};
+    cfg.method='runica';
     ic_data = ft_componentanalysis (cfg,trialdata);
     cfg = [];
     cfg.viewmode = 'component';
@@ -107,106 +172,16 @@ for i=1:length(subid)
             % This section needs further development. Want to call ICA from a previous file        
             % x=ICA.mat
         end
-
-
-    % cfg.component = [3 8 9 19 32];
-    % cfg.component = [12];
-    %  cfg.component = [2];
-    % cfg.component = [34];
-    % cfg.component = [22];
-    % cfg.component = [6 14];
-    data_iccleaned = ft_rejectcomponent(cfg, ic_data);
+ 
+        
+ data_iccleaned = ft_rejectcomponent(cfg, ic_data);
  save(strcat(subjectid,'ICAclean.mat'),'data_iccleaned')
-    
-    % %% Artifact Detection (Auto)
-    % 
-    % % muscle
-    % cfg = [];
-    % cfg.dataset     = data_eeg;
-    % cfg.continuous = 'yes';
-    % cfg.trl = trl;
-    % % channel selection, cutoff and padding
-    % % the current values are based off the Fieldtrip tutorials
-    % cfg.artfctdef.zvalue.channel = 'all';
-    % cfg.artfctdef.zvalue.cutoff = 8;
-    % cfg.artfctdef.zvalue.trlpadding  = 0;
-    % cfg.artfctdef.zvalue.fltpadding  = 0;
-    % cfg.artfctdef.zvalue.artpadding  = 0.1;
-    % cfg.artfctdef.zvalue.artfctpeak  = 'no'
-    % cfg.artfctdef.zvalue.interactive = 'no'
-    % 
-    % 
-    % %parameters
-    % % the current values are based off the Fieldtrip tutorials
-    % cfg.artifctdef.zvalue.bpfilter = 'yes';
-    % cfg.artfctdef.zvalue.bpfreq = [110 140];
-    % cfg.artfctdef.zvalue.bpfiltord   = 9;
-    % cfg.artfctdef.zvalue.bpfilttype  = 'but';
-    % 
-    % [cfg, artifact_muscle] = ft_artifact_zvalue(cfg,data_eeg);
-    % 
-    % 
-    % % EOG Artifact rejection
-    % 
-    % cfg = [];
-    % cfg.dataset     = data_eeg;
-    % cfg.continuous = 'yes';
-    % cfg.trl = trl;
-    % cfg.artfctdef.zvalue.channel = 'all';
-    % cfg.artfctdef.zvalue.cutoff = 8;
-    % cfg.artfctdef.zvalue.trlpadding  = 0;
-    % cfg.artfctdef.zvalue.fltpadding  = 0;
-    % cfg.artfctdef.zvalue.artpadding  = 0.1;
-    % cfg.artfctdef.zvalue.artfctpeak  = 'no'
-    % cfg.artfctdef.zvalue.interactive = 'no'
-    % 
-    % %parameters
-    % % the current values are based off the Fieldtrip tutorials
-    % cfg.artifctdef.zvalue.bpfilter = 'yes';
-    % cfg.artfctdef.zvalue.bpfreq = [1 15];
-    % cfg.artfctdef.zvalue.bpfiltord   = 4;
-    % cfg.artfctdef.zvalue.bpfilttype  = 'but';
-    % 
-    % [cfg, artifact_EOG] = ft_artifact_zvalue(cfg,data_eeg);
 
-
-    % 
-    % cfg            = [];
-    %    cfg.trl        = 'data_eeg.trl'
-    %    cfg.datafile   = '1016_KDT_09_30_2016.cnt';
-    %    cfg.headerfile = '1016_KDT_09_30_2016.cnt';
-    %    cfg.continuous = 'yes'; 
-    %  
-    %    % channel selection, cutoff and padding
-    %    cfg.artfctdef.zvalue.channel     = 'EEG';
-    %    cfg.artfctdef.zvalue.cutoff      = 4;
-    %    cfg.artfctdef.zvalue.trlpadding  = 0;
-    %    cfg.artfctdef.zvalue.artpadding  = 0.1;
-    %    cfg.artfctdef.zvalue.fltpadding  = 0;
-    %  
-    %    % algorithmic parameters
-    %    cfg.artfctdef.zvalue.bpfilter   = 'yes';
-    %    cfg.artfctdef.zvalue.bpfilttype = 'but';
-    %    cfg.artfctdef.zvalue.bpfreq     = [1 15];
-    %    cfg.artfctdef.zvalue.bpfiltord  = 4;
-    %    cfg.artfctdef.zvalue.hilbert    = 'yes';
-    %  
-    %    % feedback
-    %    cfg.artfctdef.zvalue.interactive = 'yes';
-    %  
-    %    [cfg, artifact_EOG] = ft_artifact_zvalue(cfg);
-
-    %% Artifact Rejection
-
-    % cfg=[]; 
-    % cfg.artfctdef.reject = 'partial'; % this rejects complete trials, use 'partial' if you want to do partial artifact rejection
-    % cfg.artfctdef.eog.artifact = artifact_EOG; % 
-    % % cfg.artfctdef.jump.artifact = artifact_jump;
-    % cfg.artfctdef.muscle.artifact = artifact_muscle;
-    % data_no_artifacts = ft_rejectartifact(cfg,data_eeg);
-
-
-
+%  Split ICA cleaned data into trials based on TRL defined above.
+trl(1:3,1:2)=trl(1:3,1:2)/4
+trl(1:3,1:2)=round(trl(1:3,1:2))
+cfg.trl=trl
+data_iccleaned = ft_redefinetrial(cfg,data_iccleaned);  
 
 
     %% Frequency analysis over time
