@@ -32,82 +32,21 @@ for i=1:length(subid)
     dataname=filelist(cellindex)
     
 
-
     % Visualize EEG data in data browser
-%     cfg = [];
-%     cfg.dataset = dataname{1};
-%     cfg.channel = 'EEG';
-%     cfg.viewmode = 'vertical';
-%     cfg.blocksize = 1;                             % Length of data to display, in seconds
-%     cfg.preproc.demean = 'yes';                    % Demean the data before display
-%     cfg.ylim = [-46 46];
-%      
-%     ft_databrowser(cfg);
-%      
-%     set(gcf, 'Position',[1 1 1200 800])
+    cfg = [];
+    cfg.dataset = dataname{1};
+    cfg.channel = 'EEG';
+    cfg.viewmode = 'vertical';
+    cfg.blocksize = 1;                             % Length of data to display, in seconds
+    cfg.preproc.demean = 'yes';                    % Demean the data before display
+    cfg.ylim = [-46 46];
+     
+    ft_databrowser(cfg);
+     
+    set(gcf, 'Position',[1 1 1200 800])
 %     print -dpng natmeg_databrowser2.png
 
-%% Original Analysis. 1) Trials established and averaged 2) downsample, 3) ICA. 
-%     %% Define trial
-%     % 
-%     cfg = [];
-%     cfg.dataset = dataname{1};
-%     cfg.trialfun = 'ft_trialfun_general'; % this is the default
-%     cfg.trialdef.eventtype  = 'trigger'; %specify event type
-%     cfg.trialdef.eventvalue  = 22; %specify trigger value;
-%     cfg.trialdef.poststim=120
-%     cfg.trialdef.prestim=0
-%     %cfg.trl = cfg.trialdef.triallength;
-%     cfg = ft_definetrial(cfg);
-% %     cfg.continuous  = 'yes';
-% %     cfg.channel     = 'all';
-% %     cfg.bpfilter = 'yes';
-% %     cfg.bpfreq = [.5 50];  
-%     data_eeg  = ft_preprocessing(cfg);
-% %     trialdata  = ft_preprocessing(cfg);
-%     trl=cfg.trl
-% 
-%     cfg.trl=trl
-%     cfg.dataset = dataname{1};
-%     cfg.continuous  = 'yes';
-%     cfg.channel     = 'all';
-%     cfg.bpfilter = 'yes';
-%     cfg.bpfreq = [.5 50];  
-% %     data_eeg  = ft_preproces
-%     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
-%    
-%     %% Downsample to 250
-%     trialdata_orig = trialdata; %save the original data for later use
-%     cfg            = [];
-%     cfg.resamplefs = 250;
-%     cfg.detrend    = 'no';
-%     trialdata           = ft_resampledata(cfg, trialdata);
-%     %% ICA
-% 
-%     cfg = [];
-%     cfg.channel = 'EEG';
-%     ic_data = ft_componentanalysis (cfg,trialdata);
-%     cfg = [];
-%     cfg.viewmode = 'component';
-%     cfg.continuous = 'yes';
-%     cfg.layout = 'quickcap64.mat';
-%     cfg.blocksize = 1;
-%     cfg.channels = [1:10];
-%     ft_databrowser(cfg,ic_data);
-%     colormap jet
-%     ICAfigure=gcf
-%     saveas(ICAfigure,strcat(subjectid,'ICA'))
-%  pause
-%     cfg = [];
-% 
-%     x = inputdlg('Enter space-separated numbers. ICA components:')
-%         if isempty(x{1,1})==0
-%             cfg.component = str2num(x{:});
-%         else
-%             load(ICA.mat)
-%             % This section needs further development. Want to call ICA from a previous file        
-%             % x=ICA.mat
-%         end
+
 
    %% ICA Analysis over entire recording. 1)Trials established, 2)Downsample, 3) ICA, 4) Trials averaged
 %    Define trial
@@ -119,17 +58,21 @@ for i=1:length(subid)
     cfg.trialdef.eventvalue  = 22; %specify trigger value;
     cfg.trialdef.poststim=120
     cfg.trialdef.prestim=0
-    %cfg.trl = cfg.trialdef.triallength;
     cfg = ft_definetrial(cfg);
-%     cfg.continuous  = 'yes';
-%     cfg.channel     = 'all';
-%     cfg.bpfilter = 'yes';
-%     cfg.bpfreq = [.5 50];  
     data_eeg  = ft_preprocessing(cfg);
-%     trialdata  = ft_preprocessing(cfg);
-    trl=cfg.trl
+    trl.closed=cfg.trl
 
-%     cfg.trl=trl
+    cfg = [];
+    cfg.dataset = dataname{1};
+    cfg.trialfun = 'ft_trialfun_general'; % this is the default
+    cfg.trialdef.eventtype  = 'trigger'; %specify event type
+    cfg.trialdef.eventvalue  = 20; %specify trigger value;
+    cfg.trialdef.poststim=120
+    cfg.trialdef.prestim=0
+    cfg = ft_definetrial(cfg);
+    data_eeg  = ft_preprocessing(cfg);
+    trl.open=cfg.trl
+    
     cfg=[];
     cfg.dataset = dataname{1};
     cfg.continuous  = 'yes';
@@ -162,8 +105,11 @@ for i=1:length(subid)
     ICAfigure=gcf
     saveas(ICAfigure,strcat(subjectid,'ICA'))
  pause
-    cfg = [];
-
+    
+ 
+ 
+ 
+ cfg = [];
     x = inputdlg('Enter space-separated numbers. ICA components:')
         if isempty(x{1,1})==0
             cfg.component = str2num(x{:});
@@ -177,12 +123,30 @@ for i=1:length(subid)
  data_iccleaned = ft_rejectcomponent(cfg, ic_data);
  save(strcat(subjectid,'ICAclean.mat'),'data_iccleaned')
 
+   
+    cfg = [];
+    cfg.channel = 'EEG';
+    cfg.viewmode = 'vertical';
+    cfg.blocksize = 1;                             % Length of data to display, in seconds
+    cfg.preproc.demean = 'yes';                    % Demean the data before display
+    cfg.ylim = [-46 46];
+     
+    ft_databrowser(cfg,data_iccleaned);
+     
+    set(gcf, 'Position',[1 1 1200 800])  
 %  Split ICA cleaned data into trials based on TRL defined above.
-trl(1:3,1:2)=trl(1:3,1:2)/4
-trl(1:3,1:2)=round(trl(1:3,1:2))
-cfg.trl=trl
-data_iccleaned = ft_redefinetrial(cfg,data_iccleaned);  
 
+
+trl.open(:,1:2)=trl.open(:,1:2)/4
+trl.open(:,1:2)=round(trl.open(:,1:2))
+trl.closed(:,1:2)=trl.closed(:,1:2)/4
+trl.closed(:,1:2)=round(trl.closed(:,1:2))
+cfg = [];
+cfg.trl=trl.open
+data_iccleaned_open = ft_redefinetrial(cfg,data_iccleaned);  
+cfg = [];
+cfg.trl=trl.closed
+data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);  
 
     %% Frequency analysis over time
 
@@ -231,19 +195,22 @@ data_iccleaned = ft_redefinetrial(cfg,data_iccleaned);
       cfg.method       = 'mtmfft';
       cfg.output       = 'pow';
 
-      FFT    = ft_freqanalysis(cfg, data_iccleaned);
-
+      FFT_open    = ft_freqanalysis(cfg, data_iccleaned_open);
+      FFT_closed    = ft_freqanalysis(cfg, data_iccleaned_closed);
 
     %% Calculate area under the curve Alpha power from FFT
 
-    FFT.powspctrm
-    Oz_AOC(i)=trapz(FFT.powspctrm(31,15:25))
-    O1_AOC(i)=trapz(FFT.powspctrm(10,15:25))
-    O2_AOC(i)=trapz(FFT.powspctrm(9,15:25))
+    FFT_open.powspctrm
+    FFT_closed.powspctrm
+    Oz_AOC_open(i)=trapz(FFT_open.powspctrm(31,15:25))
+    O1_AOC_open(i)=trapz(FFT_open.powspctrm(10,15:25))
+    O2_AOC_open(i)=trapz(FFT_open.powspctrm(9,15:25))
+    Oz_AOC_closed(i)=trapz(FFT_closed.powspctrm(31,15:25))
+    O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,15:25))
+    O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,15:25))
+    
     ICA(i,:)=[subjectid,x]
-    plot(FFT.powspctrm')
-
-    pause
+    plot(FFT_open.powspctrm')
 end
 save ICA.mat ICA
 T=table(O1_AOC,O2_AOC,Oz_AOC,'RowNames',subid)
