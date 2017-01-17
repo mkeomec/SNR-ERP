@@ -213,5 +213,5 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
     plot(FFT_open.powspctrm')
 end
 save ICA.mat ICA
-T=table(O1_AOC,O2_AOC,Oz_AOC,'RowNames',subid)
+T=table(O1_AOC_open,O2_AOC_open,Oz_AOC_open,O1_AOC_closed,O2_AOC_closed,Oz_AOC_closed,'RowNames',subid)
 writetable(T,strcat(subjectid,'alphapower'))
