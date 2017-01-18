@@ -17,7 +17,7 @@ subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
 
 % Find all .cnt files in subfolders with 'KDT' in the filename
-[status,filelist]=system('dir /S/B *KDT_*.cnt');
+[status,filelist]=system('dir /S/B *KDT*.cnt');
 list = textscan(filelist, '%s', 'Delimiter', '\n');
 filelist=list{1,1}
 
@@ -33,17 +33,17 @@ for i=1:length(subid)
     
 
     % Visualize EEG data in data browser
-%     cfg = [];
-%     cfg.dataset = dataname{1};
-%     cfg.channel = 'EEG';
-%     cfg.viewmode = 'vertical';
-%     cfg.blocksize = 1;                             % Length of data to display, in seconds
-%     cfg.preproc.demean = 'yes';                    % Demean the data before display
-%     cfg.ylim = [-46 46];
-%      
-%     ft_databrowser(cfg);
-%      
-%     set(gcf, 'Position',[1 1 1200 800])
+    cfg = [];
+    cfg.dataset = dataname{1};
+    cfg.channel = 'EEG';
+    cfg.viewmode = 'vertical';
+    cfg.blocksize = 1;                             % Length of data to display, in seconds
+    cfg.preproc.demean = 'yes';                    % Demean the data before display
+    cfg.ylim = [-46 46];
+     
+    ft_databrowser(cfg);
+     
+    set(gcf, 'Position',[1 1 1200 800])
 %     print -dpng natmeg_databrowser2.png
 
 
@@ -124,16 +124,16 @@ for i=1:length(subid)
  save(strcat(subjectid,'ICAclean.mat'),'data_iccleaned')
 
    
-%     cfg = [];
-%     cfg.channel = 'EEG';
-%     cfg.viewmode = 'vertical';
-%     cfg.blocksize = 1;                             % Length of data to display, in seconds
-%     cfg.preproc.demean = 'yes';                    % Demean the data before display
-%     cfg.ylim = [-46 46];
-%      
-%     ft_databrowser(cfg,data_iccleaned);
-%      
-%     set(gcf, 'Position',[1 1 1200 800])  
+    cfg = [];
+    cfg.channel = 'EEG';
+    cfg.viewmode = 'vertical';
+    cfg.blocksize = 1;                             % Length of data to display, in seconds
+    cfg.preproc.demean = 'yes';                    % Demean the data before display
+    cfg.ylim = [-46 46];
+     
+    ft_databrowser(cfg,data_iccleaned);
+     
+    set(gcf, 'Position',[1 1 1200 800])  
 %  Split ICA cleaned data into trials based on TRL defined above.
 
 
@@ -150,40 +150,40 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
 
     %% Frequency analysis over time
 
-%     cfg              = [];
-%     cfg.trials       = 'all'
-%     cfg.output       = 'pow'; 
-%     cfg.channel      = 'all';
-%     cfg.method       = 'mtmconvol';
-%     cfg.taper        = 'hanning';
-%     cfg.toi          = [0 : 1 : 120];
-%     cfg.foi          = 0:.5:20;
-%     cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
-%     TFRhann = ft_freqanalysis(cfg, data_iccleaned);
-% 
-%     % Plot single channel
-%     cfg = [];
-%     % cfg.baseline     = [-0.5 -0.1];
-%     cfg.baselinetype = 'absolute';  
-%     % cfg.maskstyle    = 'saturation';	
-%     cfg.zlim         = [0 25];	        
-%     cfg.channel      = 'O1';
-% 
-%     figure;
-%     ft_singleplotTFR(cfg, TFRhann);
-% 
-%     cfg = [];
-%     % cfg.baseline     = [-0.5 -0.1]; 
-%     % cfg.baselinetype = 'absolute'; 
-%     cfg.xlim         = [1 360];   
-%     cfg.zlim         = [0 20];	
-%     cfg.ylim         = [7.5 12.5];
-%     cfg.marker       = 'on';
-%     cfg.showlabels   = 'yes';	
-%     cfg.layout       = 'quickcap64.mat';
-%     figure 
-%     % ft_multiplotTFR(cfg, TFRhann);
-%     ft_topoplotTFR(cfg, TFRhann);
+    cfg              = [];
+    cfg.trials       = 'all'
+    cfg.output       = 'pow'; 
+    cfg.channel      = 'all';
+    cfg.method       = 'mtmconvol';
+    cfg.taper        = 'hanning';
+    cfg.toi          = [0 : 1 : 120];
+    cfg.foi          = 0:.5:20;
+    cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
+    TFRhann = ft_freqanalysis(cfg, data_iccleaned);
+
+    % Plot single channel
+    cfg = [];
+    % cfg.baseline     = [-0.5 -0.1];
+    cfg.baselinetype = 'absolute';  
+    % cfg.maskstyle    = 'saturation';	
+    cfg.zlim         = [0 25];	        
+    cfg.channel      = 'O1';
+
+    figure;
+    ft_singleplotTFR(cfg, TFRhann);
+
+    cfg = [];
+    % cfg.baseline     = [-0.5 -0.1]; 
+    % cfg.baselinetype = 'absolute'; 
+    cfg.xlim         = [1 360];   
+    cfg.zlim         = [0 20];	
+    cfg.ylim         = [7.5 12.5];
+    cfg.marker       = 'on';
+    cfg.showlabels   = 'yes';	
+    cfg.layout       = 'quickcap64.mat';
+    figure 
+    % ft_multiplotTFR(cfg, TFRhann);
+    ft_topoplotTFR(cfg, TFRhann);
 
     %% Frequency Analysis per trial
       cfg = [];
@@ -211,7 +211,6 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
     
     ICA(i,:)=[subjectid,x]
     plot(FFT_open.powspctrm')
-    plot(FFT_closed.powspctrm')
 end
 save ICA.mat ICA
 
@@ -222,4 +221,4 @@ Oz_AOC_closed=Oz_AOC_closed'
 O1_AOC_closed=O1_AOC_closed'
 O2_AOC_closed=O2_AOC_closed'
 T=table(O1_AOC_open,O2_AOC_open,Oz_AOC_open,O1_AOC_closed,O2_AOC_closed,Oz_AOC_closed,'RowNames',subid)
-writetable(T,'alphapower.csv','WriteRowNames',true)
+writetable(T,strcat(subjectid,'alphapower'))
