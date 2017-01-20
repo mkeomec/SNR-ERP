@@ -189,7 +189,7 @@ save(strcat(subjectid,date,'trl.mat'),'trl')
 
     %% Frequency Analysis per trial
       cfg = [];
-      cfg.foi          = [1:30]; 
+      cfg.foi          = 0:.5:20; 
       cfg.tapsmofrq    = 1
       cfg.taper        = 'hanning';
       cfg.channel      = 'all';
@@ -204,15 +204,16 @@ save(strcat(subjectid,date,'trl.mat'),'trl')
 
     FFT_open.powspctrm
     FFT_closed.powspctrm
-    Oz_AOC_open(i)=trapz(FFT_open.powspctrm(31,15:25))
-    O1_AOC_open(i)=trapz(FFT_open.powspctrm(10,15:25))
-    O2_AOC_open(i)=trapz(FFT_open.powspctrm(9,15:25))
-    Oz_AOC_closed(i)=trapz(FFT_closed.powspctrm(31,15:25))
-    O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,15:25))
-    O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,15:25))
+    Oz_AOC_open(i)=trapz(FFT_open.powspctrm(31,17:25))
+    O1_AOC_open(i)=trapz(FFT_open.powspctrm(10,17:25))
+    O2_AOC_open(i)=trapz(FFT_open.powspctrm(9,17:25))
+    Oz_AOC_closed(i)=trapz(FFT_closed.powspctrm(31,17:25))
+    O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,17:25))
+    O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,17:25))
     
     ICA(i,:)=[subjectid,x]
     plot(FFT_open.powspctrm')
+    figure
     plot(FFT_closed.powspctrm')
 end
 save ICA.mat ICA
