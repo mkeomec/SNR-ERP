@@ -121,7 +121,7 @@ for i=1:length(subid)
  
         
  data_iccleaned = ft_rejectcomponent(cfg, ic_data);
- save(strcat(subjectid,'ICAclean.mat'),'data_iccleaned')
+ save(strcat(subjectid,date,'ICAclean.mat'),'data_iccleaned')
 
    
 %     cfg = [];
@@ -147,6 +147,8 @@ data_iccleaned_open = ft_redefinetrial(cfg,data_iccleaned);
 cfg = [];
 cfg.trl=trl.closed
 data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);  
+
+save(strcat(subjectid,date,'trl.mat'),'trl')
 
     %% Frequency analysis over time
 
