@@ -15,6 +15,7 @@ function alphapower
 % Subject id's
 subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
+ICArun = input('Run ICA? 0=no, 1=yes: ')
 
 % Find all .cnt files in subfolders with 'KDT' in the filename
 [status,filelist]=system('dir /S/B *KDT_*.cnt');
@@ -89,9 +90,8 @@ for i=1:length(subid)
     trialdata           = ft_resampledata(cfg, trialdata);
     
     %% ICA
-
+if ICArun==1
     cfg = [];
-%     cfg.channel = {'EEG'};
     cfg.method='runica';
     ic_data = ft_componentanalysis (cfg,trialdata);
     cfg = [];
@@ -103,27 +103,27 @@ for i=1:length(subid)
     ft_databrowser(cfg,ic_data);
     colormap jet
     ICAfigure=gcf
-    saveas(ICAfigure,strcat(subjectid,'ICA'))
- pause
+    saveas(ICAfigure,strcat(subjectid,'_',date,'_','ICA'))
+end
     
- 
- 
- 
+     
  cfg = [];
-    x = inputdlg('Enter space-separated numbers. ICA components:')
-        if isempty(x{1,1})==0
+    
+        if ICArun==1
+            pause
+            x = inputdlg('Enter space-separated numbers. ICA components:')
             cfg.component = str2num(x{:});
+            save(strcat(subjectid,'_',date,'_','ICAclean.mat'),'data_iccleaned')
+            ICAcomponents(i,:)=[subjectid,x]
         else
-            load(ICA.mat)
+            load('ICA.mat')
+            subjectid
+            x=cell2num(ICA(find(ismember(ICA,num2str(subjectid))),2))
+            load(strcat(subjectid,'ICAclean.mat'))
             % This section needs further development. Want to call ICA from a previous file        
             % x=ICA.mat
         end
- 
-        
- data_iccleaned = ft_rejectcomponent(cfg, ic_data);
- save(strcat(subjectid,date,'ICAclean.mat'),'data_iccleaned')
-
-   
+  
 %     cfg = [];
 %     cfg.channel = 'EEG';
 %     cfg.viewmode = 'vertical';
@@ -148,7 +148,7 @@ cfg = [];
 cfg.trl=trl.closed
 data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);  
 
-save(strcat(subjectid,date,'trl.mat'),'trl')
+save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
 
     %% Frequency analysis over time
 
@@ -159,6 +159,7 @@ save(strcat(subjectid,date,'trl.mat'),'trl')
 %     cfg.method       = 'mtmconvol';
 %     cfg.taper        = 'hanning';
 %     cfg.toi          = [0 : 1 : 120];
+%     
 %     cfg.foi          = 0:.5:20;
 %     cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
 %     TFRhann = ft_freqanalysis(cfg, data_iccleaned);
@@ -189,14 +190,17 @@ save(strcat(subjectid,date,'trl.mat'),'trl')
 
     %% Frequency Analysis per trial
       cfg = [];
-      cfg.foi          = 0:.5:20; 
-      cfg.tapsmofrq    = 1
+      cfg.foi          = [0:.1:20]; 
+      cfg.toi          = [0 : 1 : 120];
+%       cfg.tapsmofrq    = 1
       cfg.taper        = 'hanning';
       cfg.channel      = 'all';
       cfg.trials       = 'all'
       cfg.method       = 'mtmfft';
       cfg.output       = 'pow';
-
+      cfg.t_ftimwin    = ones(size(cfg.foi)) * 0.5;
+      cfg.pad          = 'nextpow2'
+      
       FFT_open    = ft_freqanalysis(cfg, data_iccleaned_open);
       FFT_closed    = ft_freqanalysis(cfg, data_iccleaned_closed);
 
@@ -211,13 +215,14 @@ save(strcat(subjectid,date,'trl.mat'),'trl')
     O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,17:25))
     O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,17:25))
     
-    ICA(i,:)=[subjectid,x]
+    
     plot(FFT_open.powspctrm')
     figure
     plot(FFT_closed.powspctrm')
 end
-save ICA.mat ICA
-
+if ICArun==1
+    save ICA.mat ICAcomponents
+end
 Oz_AOC_open=Oz_AOC_open'
 O1_AOC_open=O1_AOC_open'
 O2_AOC_open=O2_AOC_open'
@@ -225,4 +230,4 @@ Oz_AOC_closed=Oz_AOC_closed'
 O1_AOC_closed=O1_AOC_closed'
 O2_AOC_closed=O2_AOC_closed'
 T=table(O1_AOC_open,O2_AOC_open,Oz_AOC_open,O1_AOC_closed,O2_AOC_closed,Oz_AOC_closed,'RowNames',subid)
-writetable(T,'alphapower.csv','WriteRowNames',true)
+writetable(T,strcat('alphapower_',date,'.csv'),'WriteRowNames',true)
