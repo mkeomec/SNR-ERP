@@ -113,7 +113,6 @@ end
             pause
             x = inputdlg('Enter space-separated numbers. ICA components:')
             cfg.component = str2num(x{:});
-            data_iccleaned = ft_rejectcomponent(cfg, ic_data);
             save(strcat(subjectid,'_',date,'_','ICAclean.mat'),'data_iccleaned')
             ICAcomponents(i,:)=[subjectid,x]
         else
