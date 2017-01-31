@@ -16,7 +16,7 @@ function alphapower
 subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
 ICArun = input('Run ICA? 0=no, 1=yes: ')
-
+Freq_plot = input('Plot all frequency analysis plots? 0=no, 1=yes: ')
 % Find all .cnt files in subfolders with 'KDT' in the filename
 [status,filelist]=system('dir /S/B *KDT_*.cnt');
 list = textscan(filelist, '%s', 'Delimiter', '\n');
@@ -152,7 +152,7 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
 save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
 
     %% Frequency analysis over time
-
+if Freq_plot==1
     cfg              = [];
     cfg.trials       = 'all'
     cfg.output       = 'pow'; 
@@ -167,30 +167,58 @@ save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
     TFRhann_closed = ft_freqanalysis(cfg, data_iccleaned_closed);
   
 
-%     % Plot single channel
+%     % Plot single channel, Occipital channels.
+%  Eyes Closed
     cfg = [];
-    % cfg.baseline     = [-0.5 -0.1];
     cfg.baselinetype = 'absolute';  
-    % cfg.maskstyle    = 'saturation';	
     cfg.zlim         = [0 25];	        
-    cfg.channel      = {'O1','O2','Oz'};
+    cfg.channel      = {'O1','O2','OZ','POZ','PO4','PO3'};
+
+    figure;
+    ft_singleplotTFR(cfg, TFRhann_closed);
+    colormap jet
+    Occipital_closed=gcf
+    saveas(Occipital_closed,strcat(subjectid,'_',date,'_','Occ_closed'))
+
+%     Eyes Open
 
     figure;
     ft_singleplotTFR(cfg, TFRhann_open);
+    colormap jet
+    Occipital_open=gcf
+    saveas(Occipital_open,strcat(subjectid,'_',date,'_','Occ_open'))
+    
+%   All channels, eyes open
+    cfg.channel      = 'all'
+    figure;
+    ft_singleplotTFR(cfg, TFRhann_open);
+    colormap jet
+    global_open=gcf
+    saveas(global_open,strcat(subjectid,'_',date,'_','global_open'))
 
-%     cfg = [];
-%     % cfg.baseline     = [-0.5 -0.1]; 
-%     % cfg.baselinetype = 'absolute'; 
-%     cfg.xlim         = [1 360];   
-%     cfg.zlim         = [0 20];	
-%     cfg.ylim         = [7.5 12.5];
-%     cfg.marker       = 'on';
-%     cfg.showlabels   = 'yes';	
-%     cfg.layout       = 'quickcap64.mat';
-%     figure 
-%     % ft_multiplotTFR(cfg, TFRhann);
-%     ft_topoplotTFR(cfg, TFRhann);
-
+%   All channels, eyes closed    
+    figure;
+    ft_singleplotTFR(cfg, TFRhann_closed);
+    colormap jet
+    global_closed=gcf
+    saveas(global_closed,strcat(subjectid,'_',date,'_','global_closed'))
+    
+% Topo, eyes closed
+    cfg = [];
+    cfg.xlim         = [1 360];   
+    cfg.zlim         = [0 20];	
+    cfg.ylim         = [7.5 12.5];
+    cfg.marker       = 'on';
+    cfg.showlabels   = 'yes';	
+    cfg.layout       = 'quickcap64.mat';
+    figure 
+    
+    ft_topoplotTFR(cfg, TFRhann_closed);
+    colormap jet
+    figure 
+    ft_topoplotTFR(cfg, TFRhann_open);
+    colormap jet
+end
     %% Frequency Analysis per trial
       cfg = [];
       cfg.foi          = [0:.1:20]; 
