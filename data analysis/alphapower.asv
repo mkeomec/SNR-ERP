@@ -15,8 +15,8 @@ function alphapower
 % Subject id's
 subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
-ICArun = input('Run ICA? 0=no, 1=yes: ')
-Freq_plot = input('Plot all frequency analysis plots? 0=no, 1=yes: ')
+ICArun = input('Run ICA? 0=no, 1=yes:  ')
+Freq_plot = input('Plot all frequency analysis plots? 0=no, 1=yes:  ')
 % Find all .cnt files in subfolders with 'KDT' in the filename
 [status,filelist]=system('dir /S/B *KDT_*.cnt');
 list = textscan(filelist, '%s', 'Delimiter', '\n');
@@ -118,8 +118,7 @@ end
             ICAcomponents(i,:)=[subjectid,x]
         else
             load('ICA.mat')
-            subjectid
-            x=cell2num(ICA(find(ismember(ICA,num2str(subjectid))),2))
+%             x=cell2num(ICAcomponents(find(ismember(ICAcomponents,num2str(subjectid))),2))
             load(strcat(subjectid,'ICAclean.mat'))
             % This section needs further development. Want to call ICA from a previous file        
             % x=ICA.mat
@@ -211,13 +210,17 @@ if Freq_plot==1
     cfg.marker       = 'on';
     cfg.showlabels   = 'yes';	
     cfg.layout       = 'quickcap64.mat';
-    figure 
     
+    figure 
     ft_topoplotTFR(cfg, TFRhann_closed);
     colormap jet
+    topo_closed=gcf
+    saveas(topo_closed,strcat(subjectid,'_',date,'_','topo_closed'))
     figure 
     ft_topoplotTFR(cfg, TFRhann_open);
     colormap jet
+    topo_open=gcf
+    saveas(topo_open,strcat(subjectid,'_',date,'_','topo_open'))
 end
     %% Frequency Analysis per trial
       cfg = [];
@@ -239,26 +242,49 @@ end
 
     FFT_open.powspctrm
     FFT_closed.powspctrm
-    Oz_AOC_open(i)=trapz(FFT_open.powspctrm(31,17:25))
-    O1_AOC_open(i)=trapz(FFT_open.powspctrm(10,17:25))
-    O2_AOC_open(i)=trapz(FFT_open.powspctrm(9,17:25))
-    Oz_AOC_closed(i)=trapz(FFT_closed.powspctrm(31,17:25))
-    O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,17:25))
-    O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,17:25))
     
+%   Channel Layout
+%   quickcap64: POZ=48, PO3= 55, PO4=57, O1=61, OZ=62, O2=63 
+%   Neuroscan65.elp: POZ=18, PO3=34 , PO4=33, O1=10, OZ=31, O2=9 
+    OZ_AOC_open(i)=trapz(FFT_open.powspctrm(31,17:26))
+    O1_AOC_open(i)=trapz(FFT_open.powspctrm(10,17:26))
+    O2_AOC_open(i)=trapz(FFT_open.powspctrm(9,17:26))
+    POZ_AOC_open(i)=trapz(FFT_open.powspctrm(18,17:26))
+    PO3_AOC_open(i)=trapz(FFT_open.powspctrm(34,17:26))
+    PO4_AOC_open(i)=trapz(FFT_open.powspctrm(33,17:26))
+    
+    OZ_AOC_closed(i)=trapz(FFT_closed.powspctrm(31,17:26))
+    O1_AOC_closed(i)=trapz(FFT_closed.powspctrm(10,17:26))
+    O2_AOC_closed(i)=trapz(FFT_closed.powspctrm(9,17:26))
+    POZ_AOC_closed(i)=trapz(FFT_closed.powspctrm(18,17:26))
+    PO3_AOC_closed(i)=trapz(FFT_closed.powspctrm(34,17:26))
+    PO4_AOC_closed(i)=trapz(FFT_closed.powspctrm(33,17:26))
     
     plot(FFT_open.powspctrm')
+    FFT_open_fig=gcf
+    saveas(FFT_open_fig,strcat(subjectid,'_',date,'_','FFT_open'))
+    
     figure
     plot(FFT_closed.powspctrm')
+    FFT_closed_fig=gcf
+    saveas(FFT_closed_fig,strcat(subjectid,'_',date,'_','FFT_closed'))
+    close all
 end
 if ICArun==1
-    save ICA.mat ICAcomponents
+    save(strcat('ICA_',date,'.mat'),'ICAcomponents')
 end
-Oz_AOC_open=Oz_AOC_open'
+OZ_AOC_open=OZ_AOC_open'
 O1_AOC_open=O1_AOC_open'
 O2_AOC_open=O2_AOC_open'
-Oz_AOC_closed=Oz_AOC_closed'
+POZ_AOC_open=POZ_AOC_open'
+PO3_AOC_open=PO3_AOC_open'
+PO4_AOC_open=O4_AOC_open'
+
+OZ_AOC_closed=OZ_AOC_closed'
 O1_AOC_closed=O1_AOC_closed'
 O2_AOC_closed=O2_AOC_closed'
-T=table(O1_AOC_open,O2_AOC_open,Oz_AOC_open,O1_AOC_closed,O2_AOC_closed,Oz_AOC_closed,'RowNames',subid)
+POZ_AOC_closed=POZ_AOC_closed'
+PO3_AOC_closed=PO3_AOC_closed'
+PO4_AOC_closed=O4_AOC_closed'
+T=table(O1_AOC_open,O2_AOC_open,OZ_AOC_open,POZ_AOC_open,PO3_AOC_open,PO4_AOC_open,O1_AOC_closed,O2_AOC_closed,OZ_AOC_closed,POZ'RowNames',subid)
 writetable(T,strcat('alphapower_',date,'.csv'),'WriteRowNames',true)
