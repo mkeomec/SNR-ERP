@@ -18,3 +18,7 @@ for(i in 1:length(sub_id)){
     y$PTA_Code[y$subject_id==sub_id[i]]<- x[x$Subject_ID == sub_id[i],"PTA"]} 
   }
 
+
+library(xlsx)
+write.xlsx(sub_id_PTA,file = "C:/Users/Michael/Documents/AuD/Year 1/BnBLab/AAS Conference 2017/R/pta_values.xlsx")
+
