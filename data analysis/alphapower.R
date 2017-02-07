@@ -1,9 +1,9 @@
 
 library(ggplot2)
 
-#alphapower <- read.csv(file= "C:/Users/cwbishop/Documents/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
+alphapower <- read.csv(file= "C:/Users/cwbishop/Documents/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
 
-alphapower <- read.csv(file= "C:/Users/Michael/Documents/GitHub/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
+#alphapower <- read.csv(file= "C:/Users/Michael/Documents/GitHub/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
 
 alphapower <- alphapower[-1,] #removes 1015 subejct info 
 
@@ -15,6 +15,14 @@ open_closed.ratio <- alphapower$Open_closed.ratio
 SNR80 <- alphapower$SNR_80_OLD
 PTA <- alphapower$PTA
 Age <- alphapower$Age
+
+cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
+cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
+cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
+
+cor.test(alphapower$Avg_open,alphapower$SNR.80..new., method="spearman")
+cor.test(alphapower$Avg_closed,alphapower$SNR.80..new., method="spearman")
+cor.test(alphapower$Open_closed.ratio,alphapower$SNR.80..new., method="spearman")
 
 alpha.mod= lm (SNR80~Avg_open)
 summary(alpha.mod)
@@ -30,6 +38,14 @@ summary(alpha.mod3)
 
 alpha.mod4= lm (SNR_80_OLD~open_closed.ratio, data=alphapower)
 summary(alpha.mod4)
+
+ggplot(alphapower, aes(x=SNR.50..new.,y=Avg_open))+
+    geom_point(size=2, color="black") +
+    geom_smooth(method="lm", size = 1, se=FALSE)+
+    theme(panel.grid.major = element_blank()
+          , panel.grid.minor = element_blank()
+          , panel.background = element_blank()
+          , axis.line = element_line(colour = "black"))
 
 ggplot(alphapower, aes(x=Avg_open,y=SNR_80_OLD))+
   geom_point(size=2, color="black") +

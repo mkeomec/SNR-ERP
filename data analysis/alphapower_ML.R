@@ -15,7 +15,7 @@ open_closed.ratio <- alphapower$Open_closed.ratio
 SNR80 <- alphapower$SNR.80..new. 
 PTA <- alphapower$PTA
 Age <- alphapower$Age
-data <- alphapower[1:24]
+
 cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
@@ -48,7 +48,7 @@ summary(alpha.mod6)
 alpha.mod7= lm (SNR.80..new.~open_closed.ratio, data=alphapower)
 summary(alpha.mod7)
 
-ggplot(alphapower, aes(x=Avg_open,y=SNR_80_OLD))+
+ggplot(alphapower, aes(x=SNR.50..new.,y=Avg_open))+
   geom_point(size=2, color="black") +
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()
