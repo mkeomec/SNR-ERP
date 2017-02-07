@@ -88,6 +88,15 @@ ggplot(alphapower, aes(x=PTA,y=SNR_80_OLD))+
         , panel.background = element_blank()
         , axis.line = element_line(colour = "black"))
 
+ggplot(alphapower, aes(x=PTA,y=SNR_50_OLD))+
+  geom_point(size=2, color="black")+
+  geom_smooth(method="lm", size = 1, se=FALSE)+
+  theme(panel.grid.major = element_blank()
+        , panel.grid.minor = element_blank()
+        , panel.background = element_blank()
+        , axis.line = element_line(colour = "black"))
+
+
 alpha_sorted=alphapower[order(alphapower$Avg_open),]
 alpha_sorted[c("Row","Avg_open")]
 
