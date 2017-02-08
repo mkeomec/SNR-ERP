@@ -34,18 +34,18 @@ for i=1:length(subid)
     
 
     % Visualize EEG data in data browser
-%     cfg = [];
-%     cfg.dataset = dataname{1};
-%     cfg.channel = 'EEG';
-%     cfg.viewmode = 'vertical';
-%     cfg.blocksize = 1;                             % Length of data to display, in seconds
-%     cfg.preproc.demean = 'yes';                    % Demean the data before display
-%     cfg.ylim = [-46 46];
-%      
-%     ft_databrowser(cfg);
-%      
-%     set(gcf, 'Position',[1 1 1200 800])
-%     print -dpng natmeg_databrowser2.png
+     cfg = [];
+     cfg.dataset = dataname{1};
+     cfg.channel = 'EEG';
+     cfg.viewmode = 'vertical';
+     cfg.blocksize = 1;                             % Length of data to display, in seconds
+     cfg.preproc.demean = 'yes';                    % Demean the data before display
+     cfg.ylim = [-46 46];
+      
+     ft_databrowser(cfg);
+      
+     set(gcf, 'Position',[1 1 1200 800])
+     print -dpng natmeg_databrowser2.png
 
 
 
@@ -81,6 +81,10 @@ for i=1:length(subid)
     cfg.bpfilter = 'yes';
     cfg.bpfreq = [.5 50];  
     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
+    
+    
+    
+
    
     %% Downsample to 250
     trialdata_orig = trialdata; %save the original data for later use
@@ -150,6 +154,20 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
 
 save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
 
+
+     %% Visualize EEG data in data browser after ICA
+     cfg = [];
+     cfg.dataset = strcat(subjectid,'_',date,'_','ICAclean.mat');
+     cfg.channel = 'EEG';
+     cfg.viewmode = 'vertical';
+     cfg.blocksize = 1;                             % Length of data to display, in seconds
+     cfg.preproc.demean = 'yes';                    % Demean the data before display
+     cfg.ylim = [-46 46];
+      
+     ft_databrowser(cfg,data_iccleaned);
+      
+     set(gcf, 'Position',[1 1 1200 800])
+     print -dpng natmeg_databrowser2.png
     %% Frequency analysis over time
 if Freq_plot==1
     cfg              = [];
