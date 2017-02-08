@@ -261,11 +261,29 @@ end
     PO4_AOC_closed(i)=trapz(FFT_closed.powspctrm(33,17:26))
     
     plot(mean(FFT_open.powspctrm([31,10,9,18,34,33],:)))
+% %   Plotting parameters
+%     axis([0 200,0 .4])
+%     xlabel('Frequency - Hz')
+%     ylabel('Power')
+%     xticks([40 80 120 160 200])
+%     xticklabels({'4','8','12','16','20'})
+%     yticks([.2 .4])
+%     yticks([.1 .2 .3 .4])
+%     title(strcat('FFT-eyes open-Occipital',subjectid))
     FFT_open_fig=gcf
     saveas(FFT_open_fig,strcat(subjectid,'_',date,'_','FFT_open'))
     
     figure
     plot(mean(FFT_closed.powspctrm([31,10,9,18,34,33],:)))
+% %   Plotting parameters
+%     axis([0 200,0 .4])
+%     title(strcat('FFT-eyes closed-Occipital',subjectid))
+%     xlabel('Frequency - Hz')
+%     ylabel('Power')
+%     xticks([40 80 120 160 200])
+%     xticklabels({'4','8','12','16','20'})
+%     yticks([.2 .4])
+%     yticks([.1 .2 .3 .4])
     FFT_closed_fig=gcf
     saveas(FFT_closed_fig,strcat(subjectid,'_',date,'_','FFT_closed'))
     close all

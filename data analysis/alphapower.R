@@ -39,7 +39,7 @@ summary(alpha.mod3)
 alpha.mod4= lm (SNR_80_OLD~open_closed.ratio, data=alphapower)
 summary(alpha.mod4)
 
-ggplot(alphapower, aes(x=SNR.50..new.,y=Avg_open))+
+ggplot(alphapower, aes(x=Avg_open,y=SNR.50..new.))+
     geom_point(size=2, color="black") +
     geom_smooth(method="lm", size = 1, se=FALSE)+
     theme(panel.grid.major = element_blank()
