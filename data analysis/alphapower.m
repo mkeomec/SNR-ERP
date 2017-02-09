@@ -6,23 +6,28 @@ function alphapower
 
 %% Description: 
 % EEG-SNR project: Analysis code to assess the alpha power during the KDT
-% and AAT. Currently the code analyzes the closed eyes condition during the
-% AAT.
+% and AAT. Currently the code analyzes the eyes open and closed conditions during the
+% AAT. 
+% Main output is the area under the curve of FFT power spectrum within the
+% alpha range (7.5-12.5 hz)
+
 % NOTE: Matlab working directory must be in data folder that is above subjects folders
 
 %% Enter subject ID for subjects to be analyzed. Opens dialog box to enter
 % Subject id's
 subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
+
+% Query to run ICA or load ICA results from previous analysis
 ICArun = input('Run ICA? 0=no, 1=yes:  ')
+
+% Query to plot frequency analysis. 
 Freq_plot = input('Plot all frequency analysis plots? 0=no, 1=yes:  ')
+
 % Find all .cnt files in subfolders with 'KDT' in the filename
 [status,filelist]=system('dir /S/B *KDT_*.cnt');
 list = textscan(filelist, '%s', 'Delimiter', '\n');
 filelist=list{1,1}
-
-% Create data table to store results
-
 
 % Start of analysis loop for each subject
 for i=1:length(subid)
@@ -49,30 +54,32 @@ for i=1:length(subid)
 
 
    %% ICA Analysis over entire recording. 1)Trials established, 2)Downsample, 3) ICA, 4) Trials averaged
-%    Define trial
-    % 
+%    Define trials
+    % Eyes closed
     cfg = [];
     cfg.dataset = dataname{1};
     cfg.trialfun = 'ft_trialfun_general'; % this is the default
     cfg.trialdef.eventtype  = 'trigger'; %specify event type
-    cfg.trialdef.eventvalue  = 22; %specify trigger value;
+    cfg.trialdef.eventvalue  = 22; %Eyes closed trigger
     cfg.trialdef.poststim=120
     cfg.trialdef.prestim=0
     cfg = ft_definetrial(cfg);
     data_eeg  = ft_preprocessing(cfg);
     trl.closed=cfg.trl
-
+    
+    % Eyes open
     cfg = [];
     cfg.dataset = dataname{1};
     cfg.trialfun = 'ft_trialfun_general'; % this is the default
     cfg.trialdef.eventtype  = 'trigger'; %specify event type
-    cfg.trialdef.eventvalue  = 20; %specify trigger value;
+    cfg.trialdef.eventvalue  = 20; %Eye open trigger
     cfg.trialdef.poststim=120
     cfg.trialdef.prestim=0
     cfg = ft_definetrial(cfg);
     data_eeg  = ft_preprocessing(cfg);
     trl.open=cfg.trl
     
+%     Bandpass filter 
     cfg=[];
     cfg.dataset = dataname{1};
     cfg.continuous  = 'yes';
@@ -82,10 +89,7 @@ for i=1:length(subid)
     trialdata = ft_preprocessing(cfg);	% call preprocessing, putting the output in ‘trialdata’
     
     
-    
-
-   
-    %% Downsample to 250
+    %% Downsample to 250 hz
     trialdata_orig = trialdata; %save the original data for later use
     cfg            = [];
     cfg.resamplefs = 250;
@@ -93,6 +97,9 @@ for i=1:length(subid)
     trialdata           = ft_resampledata(cfg, trialdata);
     
     %% ICA
+%   Run ICA and display components for review. Note the components to be
+%   rejected. Save figure.
+
 if ICArun==1
     cfg = [];
     cfg.method='runica';
@@ -110,35 +117,21 @@ if ICArun==1
 end
     
      
- cfg = [];
-    
-        if ICArun==1
-            pause
-            x = inputdlg('Enter space-separated numbers. ICA components:')
-            cfg.component = str2num(x{:});
-            data_iccleaned = ft_rejectcomponent(cfg, ic_data);
-            save(strcat(subjectid,'_',date,'_','ICAclean.mat'),'data_iccleaned')
-            ICAcomponents(i,:)=[subjectid,x]
-        else
-            load('ICA.mat')
-%             x=cell2num(ICAcomponents(find(ismember(ICAcomponents,num2str(subjectid))),2))
-            load(strcat(subjectid,'ICAclean.mat'))
-            % This section needs further development. Want to call ICA from a previous file        
-            % x=ICA.mat
-        end
+cfg = [];
+%    Input ICA components to be rejected
+    if ICArun==1
+        pause
+        x = inputdlg('Enter space-separated numbers. ICA components:')
+        cfg.component = str2num(x{:});
+        data_iccleaned = ft_rejectcomponent(cfg, ic_data);
+        save(strcat(subjectid,'_',date,'_','ICAclean.mat'),'data_iccleaned')
+        ICAcomponents(i,:)=[subjectid,x]
+    else
+        load(strcat(subjectid,'ICAclean.mat'))
+    end
   
-%     cfg = [];
-%     cfg.channel = 'EEG';
-%     cfg.viewmode = 'vertical';
-%     cfg.blocksize = 1;                             % Length of data to display, in seconds
-%     cfg.preproc.demean = 'yes';                    % Demean the data before display
-%     cfg.ylim = [-46 46];
-%      
-%     ft_databrowser(cfg,data_iccleaned);
-%      
-%     set(gcf, 'Position',[1 1 1200 800])  
-%  Split ICA cleaned data into trials based on TRL defined above.
-
+%%  Split ICA cleaned data into trials based on TRL defined above.
+% Eyes open and eyes closed trials 
 
 trl.open(:,1:2)=trl.open(:,1:2)/4
 trl.open(:,1:2)=round(trl.open(:,1:2))
@@ -154,7 +147,7 @@ data_iccleaned_closed = ft_redefinetrial(cfg,data_iccleaned);
 save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
 
 
-     %% Visualize EEG data in data browser after ICA
+%% Visualize EEG data in data browser after ICA
      cfg = [];
      cfg.dataset = strcat(subjectid,'_',date,'_','ICAclean.mat');
      cfg.channel = 'EEG';
@@ -167,7 +160,7 @@ save(strcat(subjectid,'_',date,'_','trl.mat'),'trl')
       
      set(gcf, 'Position',[1 1 1200 800])
      print -dpng natmeg_databrowser2.png
-    %% Frequency analysis over time
+%% Frequency analysis over time
 if Freq_plot==1
     cfg              = [];
     cfg.trials       = 'all'
@@ -183,8 +176,9 @@ if Freq_plot==1
     TFRhann_closed = ft_freqanalysis(cfg, data_iccleaned_closed);
   
 
-%     % Plot Occipital channels.
-%  Eyes Closed
+%  Plot Power density by frequency
+%  Occipital channels, Eyes Closed
+    cfg = [];Eyes Closed
     cfg = [];
     cfg.baselinetype = 'absolute';  
     cfg.zlim         = [0 25];	        
@@ -196,8 +190,8 @@ if Freq_plot==1
     Occipital_closed=gcf
     saveas(Occipital_closed,strcat(subjectid,'_',date,'_','Occ_closed'))
 
-%     Eyes Open
-
+%   Occipital channels, Eyes Open
+    cfg = [];Eyes Open
     figure;
     ft_singleplotTFR(cfg, TFRhann_open);
     colormap jet
@@ -219,7 +213,7 @@ if Freq_plot==1
     global_closed=gcf
     saveas(global_closed,strcat(subjectid,'_',date,'_','global_closed'))
     
-% Topo, eyes closed
+% Topo power density, eyes closed
     cfg = [];
     cfg.xlim         = [1 360];   
     cfg.zlim         = [0 20];	
@@ -233,17 +227,20 @@ if Freq_plot==1
     colormap jet
     topo_closed=gcf
     saveas(topo_closed,strcat(subjectid,'_',date,'_','topo_closed'))
+
+% Topo power density, eyes open    
     figure 
     ft_topoplotTFR(cfg, TFRhann_open);
     colormap jet
     topo_open=gcf
     saveas(topo_open,strcat(subjectid,'_',date,'_','topo_open'))
 end
-    %% Frequency Analysis per trial
+
+%% FFT analysis
       cfg = [];
       cfg.foi          = [0:.1:20]; 
       cfg.toi          = [0 : 1 : 120];
-%       cfg.tapsmofrq    = 1
+%     cfg.tapsmofrq    = 1
       cfg.taper        = 'hanning';
       cfg.channel      = 'all';
       cfg.trials       = 'all'
@@ -321,5 +318,7 @@ O2_AOC_closed=O2_AOC_closed'
 POZ_AOC_closed=POZ_AOC_closed'
 PO3_AOC_closed=PO3_AOC_closed'
 PO4_AOC_closed=PO4_AOC_closed'
+
+% Write results to table and save
 T=table(O1_AOC_open,O2_AOC_open,OZ_AOC_open,POZ_AOC_open,PO3_AOC_open,PO4_AOC_open,O1_AOC_closed,O2_AOC_closed,OZ_AOC_closed,POZ_AOC_closed, PO3_AOC_closed, PO4_AOC_closed,'RowNames',subid)
 writetable(T,strcat('alphapower_',date,'.csv'),'WriteRowNames',true)
