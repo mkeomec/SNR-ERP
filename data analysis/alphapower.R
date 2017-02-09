@@ -16,13 +16,13 @@ SNR80 <- alphapower$SNR_80_OLD
 PTA <- alphapower$PTA
 Age <- alphapower$Age
 
-cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
-cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
-cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
+cor1 <- cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
+cor2 <- cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
+cor3 <- cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
 
-cor.test(alphapower$Avg_open,alphapower$SNR.80..new., method="spearman")
-cor.test(alphapower$Avg_closed,alphapower$SNR.80..new., method="spearman")
-cor.test(alphapower$Open_closed.ratio,alphapower$SNR.80..new., method="spearman")
+cor4 <- cor.test(alphapower$Avg_open,alphapower$SNR.80..new., method="spearman")
+cor5 <- cor.test(alphapower$Avg_closed,alphapower$SNR.80..new., method="spearman")
+cor6 <- cor.test(alphapower$Open_closed.ratio,alphapower$SNR.80..new., method="spearman")
 
 alpha.mod= lm (SNR80~Avg_open)
 summary(alpha.mod)

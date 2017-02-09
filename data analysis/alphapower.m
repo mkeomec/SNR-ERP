@@ -1,9 +1,8 @@
 function alphapower
 
-    %  TO-DO
+%% TO-DO
     % -Create layout in Fieldtrip
-    % -Create wrapper to batch process all subjects
-    % -Save input for ICA
+      
 
 %% Description: 
 % EEG-SNR project: Analysis code to assess the alpha power during the KDT
