@@ -281,7 +281,7 @@ end
 %     ylabel('Power')
 %     xticks([40 80 120 160 200])
 %     xticklabels({'4','8','12','16','20'})
-%     yticks([.2 .4])
+%     yticks([.2 .4 .6])
 %     yticks([.1 .2 .3 .4])
 %     title(strcat('FFT-eyes open-Occipital',subjectid))
     FFT_open_fig=gcf
@@ -322,3 +322,9 @@ PO4_AOC_closed=PO4_AOC_closed'
 % Write results to table and save
 T=table(O1_AOC_open,O2_AOC_open,OZ_AOC_open,POZ_AOC_open,PO3_AOC_open,PO4_AOC_open,O1_AOC_closed,O2_AOC_closed,OZ_AOC_closed,POZ_AOC_closed, PO3_AOC_closed, PO4_AOC_closed,'RowNames',subid)
 writetable(T,strcat('alphapower_',date,'.csv'),'WriteRowNames',true)
+
+% Post-analysis plotting
+open_1030=openfig('1030_03-Feb-2017_FFT_open.fig')
+closed_1030=openfig('1030_03-Feb-2017_FFT_closed.fig')
+L=findobj(closed_1030,'type','line')
+copyobj(L,findobj(open_1030,'type','axes'))
