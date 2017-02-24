@@ -21,6 +21,7 @@ cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="pearson")
 cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="pearson")
 cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
+cor.test(alphapower$PTA,alphapower$Age, method="spearman")
 cor.test(alphapower$Age,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$PTA,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
@@ -78,7 +79,7 @@ ggplot(alphapower, aes(x=Avg_open,y=SNR.50..new.))+
         , axis.line = element_line(colour = "black"))
   
 
-ggplot(alphapower, aes(x=Avg_closed,y=SNR.50..new.))+ 
+ggplot(alphapower, aes(x=Avg_closed,y=SNR.80..new.))+ 
   geom_point(size=2, color="black") +
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()
@@ -118,7 +119,7 @@ ggplot(alphapower, aes(x=Avg_open,y=Avg_closed))+
         , panel.background = element_blank()
         , axis.line = element_line(colour = "black"))
 
-ggplot(alphapower, aes(x=PTA,y=SNR_80_OLD))+
+ggplot(alphapower, aes(x=Age,y=PTA))+
   geom_point(size=2, color="black")+
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()
