@@ -25,7 +25,11 @@ cor.test(alphapower$PTA,alphapower$Age, method="spearman")
 cor.test(alphapower$Age,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$PTA,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
-
+cor.test(alphapower$PTA,alphapower$Avg_open, method="pearson")
+cor.test(alphapower$PTA,alphapower$Avg_closed, method="pearson")
+cor.test(alphapower$Age,alphapower$Avg_open, method="pearson")
+cor.test(alphapower$Age,alphapower$Avg_closed, method="pearson")
+cor.test(alphapower$Age,alphapower$PTA, method="pearson")
 
 cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
