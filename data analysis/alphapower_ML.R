@@ -1,26 +1,44 @@
+# Alpha power analysis code. Input from Fieldtrip
 
 library(ggplot2)
 library(car)
-alphapower <- read.csv(file= "C:/Users/cwbishop/Documents/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
+alphapower <- read.csv(file= "C:/Users/cwbishop/Documents/SNR-ERP/data analysis/alphapower_12-Apr-2017.csv",head=TRUE,sep=",")
+SNR <- read.csv(file= "E:/Google Drive/Project AE_SNR EEG ERP/Data/SNR2017-04-12.csv",head=TRUE,sep=",")
 
-#alphapower <- read.csv(file= "C:/Users/Michael/Documents/GitHub/SNR-ERP/data analysis/alphapower_Master.csv",head=TRUE,sep=",")
+#alphapower <- read.csv(file= "E:/Google Drive/Project AE_SNR EEG ERP/Data/SNR2017-04-12.csv",head=TRUE,sep=",")
 
-alphapower <- alphapower[-1,] #removes 1015 subejct info 
+# Import and filter subject's ages
+age_data <- read.csv(file.choose(), header=TRUE)
+rownames(age_data) <- age_data$subject_id
+subids <- as.character(SNR$sub_id)
 
+#Import audiogram information
+audio <- read.csv(file.choose(), header=TRUE)
+rownames(audio) <- audio$subject_id
+raudio <- rowMeans(audio[subids,c(3,5,7)])
+laudio <- rowMeans(audio[subids,c(13,15,17)])
+
+#Combine data into single dataframe
+data <- cbind(SNR,age_data[subids,],raudio,laudio)
+rownames(data) <- data$sub_id
+
+data <- data[c(-1,-3,-16,-20,-21,-22,-23,-24,-25),] #removes 1015, 1093, and 1096 subject info 
+alphapower <- alphapower[c(-1,-3,-16,-20,-21,-22,-23,-24,-25),]
 #data <- data.frame(Avg_open,Avg_closed,open_closed.ratio,SNR80,PTA, data=alphapower)
+# Set variables
+SNR50 <- data[,10]
+SNR80 <- data[,11]
+Avg_open <- rowMeans(alphapower[,2:7])
+Avg_closed <- rowMeans(alphapower[,8:13])
+Open_closed.ratio <- Avg_open/Avg_closed
 
-Avg_open <- alphapower$Avg_open
-Avg_closed <- alphapower$Avg_closed
-open_closed.ratio <- alphapower$Open_closed.ratio
-SNR80 <- alphapower$SNR.80..new. 
-PTA <- alphapower$PTA
-Age <- alphapower$Age
 
-cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="spearman")
-cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="spearman")
-cor.test(alphapower$Avg_open,alphapower$SNR.50..new., method="pearson")
-cor.test(alphapower$Avg_closed,alphapower$SNR.50..new., method="pearson")
-cor.test(alphapower$Open_closed.ratio,alphapower$SNR.50..new., method="spearman")
+cor.test(Avg_open,SNR50, method="spearman")
+cor.test(Avg_open,SNR80, method="spearman")
+cor.test(Avg_closed,SNR50, method="spearman")
+cor.test(Avg_open,SNR50, method="pearson")
+cor.test(Avg_closed,SNR50, method="pearson")
+cor.test(Open_closed.ratio,SNR50, method="spearman")
 cor.test(alphapower$PTA,alphapower$Age, method="spearman")
 cor.test(alphapower$Age,alphapower$SNR.50..new., method="spearman")
 cor.test(alphapower$PTA,alphapower$SNR.50..new., method="spearman")
@@ -74,7 +92,7 @@ vif(alpha.mod9)
 cor.test(alphapower$Open_closed.ratio,alphapower$Avg_closed, method="pearson")
 
 
-ggplot(alphapower, aes(x=Avg_open,y=SNR.50..new.))+
+ggplot(alphapower, aes(x=Avg_open,y=SNR50))+
   geom_point(size=2, color="black") +
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()
@@ -83,7 +101,7 @@ ggplot(alphapower, aes(x=Avg_open,y=SNR.50..new.))+
         , axis.line = element_line(colour = "black"))
   
 
-ggplot(alphapower, aes(x=Avg_closed,y=SNR.80..new.))+ 
+ggplot(alphapower, aes(x=Avg_closed,y=SNR50))+ 
   geom_point(size=2, color="black") +
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()
@@ -91,7 +109,7 @@ ggplot(alphapower, aes(x=Avg_closed,y=SNR.80..new.))+
         , panel.background = element_blank()
         , axis.line = element_line(colour = "black"))
 
-ggplot(alphapower, aes(x=Avg_open,y=SNR_50_OLD))+
+ggplot(alphapower, aes(x=Avg_open,y=SNR80))+
   geom_point(size=2, color="black")+
   geom_smooth(method="lm", size = 1, se=FALSE)+
   theme(panel.grid.major = element_blank()

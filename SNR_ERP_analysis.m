@@ -2,10 +2,10 @@
 % Simple pipeline.  No ICA.
 
 % Set path to EEGLAB:
-addpath(genpath('C:\Users\kcbacker\Documents\MATLAB\eeglab_current\eeglab13_4_4b\'));
+% addpath(genpath('C:\Users\kcbacker\Documents\MATLAB\eeglab_current\eeglab13_4_4b\'));
 
 % Trigger Codes
-tcs = [101:106];
+tcs = [101:112];
 for c = 1:length(tcs)
     tc_labels{c} = num2str(tcs(c));
 end

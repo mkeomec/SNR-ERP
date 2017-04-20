@@ -324,7 +324,7 @@ T=table(O1_AOC_open,O2_AOC_open,OZ_AOC_open,POZ_AOC_open,PO3_AOC_open,PO4_AOC_op
 writetable(T,strcat('alphapower_',date,'.csv'),'WriteRowNames',true)
 
 % Post-analysis plotting
-open_1030=openfig('1030_03-Feb-2017_FFT_open.fig')
-closed_1030=openfig('1030_03-Feb-2017_FFT_closed.fig')
-L=findobj(closed_1030,'type','line')
-copyobj(L,findobj(open_1030,'type','axes'))
+% open_1030=openfig('1030_03-Feb-2017_FFT_open.fig')
+% closed_1030=openfig('1030_03-Feb-2017_FFT_closed.fig')
+% L=findobj(closed_1030,'type','line')
+% copyobj(L,findobj(open_1030,'type','axes'))
