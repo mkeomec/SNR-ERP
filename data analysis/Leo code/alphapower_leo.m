@@ -3,7 +3,7 @@ clear
 ft_defaults
 % specify what to load
 % dir = 'D:\Data\Ktremblay\subs\';
-dir = 'E:\Google Drive\Project AE_SNR EEG ERP\Data\1033'
+dir = 'E:\Google Drive\Project AE_SNR EEG ERP\Data\1033\'
 dat = '1033_KDT_1-10-2017.cnt';
 
 
@@ -49,7 +49,8 @@ cfg.layout = 'quickcap64.mat';
 ft_componentbrowser_afft(cfg,ICA_filt_fft);
 clear bad components
 %clc
-bad_components=input('Components to reject: ');
+
+bad_components=input('Components to reject (ie: [1,2,3]): ');
 pause
 
 % reject bad components
@@ -111,4 +112,9 @@ set(gcf, 'color', 'white')
 xlabel('Frequency [Hz]')
 ylabel('Log10(Power)')
 legend('Eyes open', 'Eyes closed')
+
+channel_id=load('quickcap64.mat')
+channel_id=channel_id.lay.label(1:64,:)
+PSD=table(PSD_ec,'RowNames',channel_id)
+writetable(PSD,strcat('PSD_',date,'.csv'),'WriteRowNames',true)
 

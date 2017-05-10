@@ -150,12 +150,14 @@ else
 	cfg = get(get(h, 'par'), 'user');
 
 	% which button has been pressed
-	if intersect(h, findobj(cfg.h, 'str', '+'))
+%     if intersect(h, findobj(cfg.h, 'str', '+'))
+	if isempty(intersect(h, findobj(cfg.h, 'str', '+')))==0
 		cfg.comp = cfg.comp + numel(cfg.comp);
 		if cfg.comp(end) > size(comp.label,1)
 			cfg.comp = cfg.comp - (cfg.comp(end) - size(comp.label,1));
 		end
-	elseif intersect(h, findobj(cfg.h, 'str', '-'))
+% 	elseif intersect(h, findobj(cfg.h, 'str', '-'))
+        elseif isempty(intersect(h, findobj(cfg.h, 'str', '-')))==0
 		cfg.comp = cfg.comp - numel(cfg.comp);
 		if cfg.comp(1) < 1
 			cfg.comp = cfg.comp - cfg.comp(1) + 1;
@@ -212,22 +214,26 @@ else
 	cfg = get(get(h, 'par'), 'user');
 
 	% which button has been pressed
-	if intersect(h, findobj(cfg.h, 'str', '>>'))
+% 	if intersect(h, findobj(cfg.h, 'str', '>>'))
+    if isempty(intersect(h, findobj(cfg.h, 'str', '>>')))==0
 		cfg.trial = cfg.trial + 10;
 		if cfg.trial > size(comp.trial,2)
 			cfg.trial = size(comp.trial,2);
 		end
-	elseif intersect(h, findobj(cfg.h, 'str', '>'))
+% 	elseif intersect(h, findobj(cfg.h, 'str', '>'))
+    elseif isempty(intersect(h, findobj(cfg.h, 'str', '>')))==0
 		cfg.trial = cfg.trial + 1;
 		if cfg.trial > size(comp.trial,2)
 			cfg.trial = size(comp.trial,2);
-		end
-	elseif intersect(h, findobj(cfg.h, 'str', '<'))
+        end
+%     elseif intersect(h, findobj(cfg.h, 'str', '<'))    
+    elseif isempty(intersect(h, findobj(cfg.h, 'str', '<')))==0
 		cfg.trial = cfg.trial - 1;
 		if cfg.trial < 1
 			cfg.trial = 1;
-		end
-	elseif intersect(h, findobj(cfg.h, 'str', '<<'))
+        end
+%     elseif intersect(h, findobj(cfg.h, 'str', '<<'))    
+    elseif isempty(intersect(h, findobj(cfg.h, 'str', '<<')))==0
 		cfg.trial = cfg.trial - 10;
 		if cfg.trial < 1
 			cfg.trial = 1;
