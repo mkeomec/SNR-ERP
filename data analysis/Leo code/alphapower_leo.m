@@ -3,21 +3,33 @@ clear
 ft_defaults
 % specify what to load
 % dir = 'D:\Data\Ktremblay\subs\';
-dir = 'E:\Google Drive\Project AE_SNR EEG ERP\Data\1033\'
-dat = '1033_KDT_1-10-2017.cnt';
+% dir = 'E:\Google Drive\Project AE_SNR EEG ERP\Data\1033\'
+% dat = '1033_KDT_1-10-2017.cnt';
 
+subid = inputdlg('Enter space-separated numbers. Subject IDs:')
+subid=strsplit(subid{1},' ')
+[status,filelist]=system('dir /S/B *KDT_*.cnt');
+list = textscan(filelist, '%s', 'Delimiter', '\n');
+filelist=list{1,1}
 
-%% load data into one file, filter it on the way
-cfg = [];
-cfg.dataset = [dir dat];
-cfg.continuous  = 'yes';
-cfg.bpfilter = 'yes';
-cfg.bpfreq = [.5 100]; 
-continuous_dat = ft_preprocessing(cfg);
+% Start of analysis loop for each subject
+for i=1:length(subid)
+    subjectid=(subid{i})
+    cell_list=regexp(filelist,subjectid);
+    cellindex=find(not(cellfun('isempty',cell_list)));
+    dataname=filelist(cellindex)
 
-% extract trialinfo to split up into eyes open / eyes closed later
+    %% load data into one file, filter it on the way
+    cfg = [];
+    cfg.dataset = dataname{1};
+    cfg.continuous  = 'yes';
+    cfg.bpfilter = 'yes';
+    cfg.bpfreq = [.5 100]; 
+    continuous_dat = ft_preprocessing(cfg);
+
+    % extract trialinfo to split up into eyes open / eyes closed later
     cfg=[];
-    cfg.dataset=[dir dat];
+    cfg.dataset=dataname{1};
     cfg.trialdef.eventvalue = [20 22];
     cfg.trialdef.eventtype  = 'trigger';
     cfg.trialdef.prestim    = 0;
@@ -51,7 +63,7 @@ clear bad components
 %clc
 
 bad_components=input('Components to reject (ie: [1,2,3]): ');
-pause
+
 
 % reject bad components
 cfg=[];
@@ -60,8 +72,9 @@ ICA_clean=ft_rejectcomponent(cfg, ICA_filt_fft);
 
 % save the ICA result and the cleaned data, use save version 7.3 to make
 % sure nothing is compressed and data is lost
-save([dir 'ICAdat.mat'], 'ICA_filt_fft', '-v7.3');
-save([dir 'ICA_clean.mat'], 'ICA_clean', '-v7.3');
+
+save(strcat(subjectid,'_',date,'_','ICAdat.mat'), 'ICA_filt_fft', '-v7.3');
+save(strcat(subjectid,'_',date,'_','ICA_clean.mat'), 'ICA_clean', '-v7.3');
 
 %% now split into eyes open / eyes closed data
 % start end end samples of trials are listed in for_triggers.trl
@@ -101,13 +114,17 @@ for e = 1:64
                  [wc, f] = pwelch(ec_dat(e,:),winlength, noverlap, nfft, fs);
                 PSD_ec(e,:) = wc;
 end
+
+% Global average PSD
+PSD_eo_mean=mean(PSD_eo(:,1:120))
+PSD_ec_mean=mean(PSD_ec(:,1:120))
 %%
 figure
 rectangle('Position', [8,-1.5,4,4], 'Curvature', [0, 0], 'FaceColor', [.9 .9 .9]) % highlight alpha range
 hold on
-plot(f(2:120), log10(PSD_eo(31,2:120)), 'color', [0 0 1]); % Eyes open in blue
+plot(f(2:120), log10(PSD_eo_mean(2:120)), 'color', [0 0 1]); % Eyes open in blue
 hold on
-plot(f(2:120), log10(PSD_ec(31,2:120)), 'color', [1 0 0]); % Eyes closed in red
+plot(f(2:120), log10(PSD_ec_mean(2:120)), 'color', [1 0 0]); % Eyes closed in red
 set(gcf, 'color', 'white')
 xlabel('Frequency [Hz]')
 ylabel('Log10(Power)')
@@ -116,5 +133,6 @@ legend('Eyes open', 'Eyes closed')
 channel_id=load('quickcap64.mat')
 channel_id=channel_id.lay.label(1:64,:)
 PSD=table(PSD_ec,'RowNames',channel_id)
-writetable(PSD,strcat('PSD_',date,'.csv'),'WriteRowNames',true)
+writetable(PSD,strcat(subjectid,'PSD_',date,'.csv'),'WriteRowNames',true)
+end
 
