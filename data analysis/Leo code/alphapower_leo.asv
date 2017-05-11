@@ -132,9 +132,9 @@ legend('Eyes open', 'Eyes closed')
 
 channel_id=load('quickcap64.mat')
 channel_id=channel_id.lay.label(1:64,:)
-PSD_ec_table=table(PSD_ec,'RowNames',channel_id)
-writetable(PSD_ec_table,strcat(subjectid,'PSD_',date,'.csv'),'WriteRowNames',true)
-PSD_eo_table=table(PSD_eo,'RowNames',channel_id)
-writetable(PSD_eo_table,strcat(subjectid,'PSD_',date,'.csv'),'WriteRowNames',true)
+PSD_ec=table(PSD_ec,'RowNames',channel_id)
+writetable(PSD_ec,strcat(subjectid,'PSD_',date,'.csv'),'WriteRowNames',true)
+PSD_eo=table(PSD_eo,'RowNames',channel_id)
+writetable(PSD,strcat(subjectid,'PSD_',date,'.csv'),'WriteRowNames',true)
 end
 
