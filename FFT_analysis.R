@@ -30,17 +30,21 @@ subject_info <- SNR$sub_id
 data <- data[data$subject_id %in% subject_info,]
 data$left_air_conduction_500[19] <- data$left_air_conduction_750[19]
 data$left_air_conduction_1000[19] <- data$left_air_conduction_1500[19]
+data=data[-1,]
 
-#Filter by audiobility (25-40 db HL SPL)
+##Filter by audiobility (25-40 db HL SPL)
 
-data <- data[rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])<41&rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])>24,]
+#data <- data[rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])<41&rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])>24,]
 
 #Filter by age >50
 #age <- age[age$Subject.ID %in% audio$subject_id,]
 #age <- age[age$What.is.the.subject.s.age.>50,]
-data <- data[data$age>49,]
+#data <- data[data$age>49,]
 
-#Filter SNR thres by age
+##Filter SNR thres by age
+#SNR_thres <- SNR_thres[SNR_thres$sub_id %in% data$subject_id,]
+
+#Filter SNR within data dataframe
 SNR_thres <- SNR_thres[SNR_thres$sub_id %in% data$subject_id,]
 
 for (j in 1:2){
@@ -162,6 +166,11 @@ colnames(alpha_data)[8] <- 'alpha_peakeo'
 alpha_data <- alpha_data[,c(1:2,6,3:5)]
 alpha_data$ratio <- alpha_data$alpha_powereo/alpha_data$alpha_powerec
 
+# Data variables
+# Average ANL sessions
+data$ANL <-  rowMeans(data.frame(data$anl_mcl_sess01,data$anl_mcl_sess02,data$anl_mcl_sess03),na.rm=TRUE)
+data$aphab_aided <- rowMeans(data.frame(data$aphab_aided_ec,data$aphab_aided_bn,data$aphab_aided_rv))
+data$aphab_unaided <- rowMeans(data.frame(data$aphab_unaided_ec,data$aphab_unaided_bn,data$aphab_unaided_rv))
 cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr50_psycho'],method='pearson')
 cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr80_psycho'],method='pearson')
 cor.test(alpha_data[,"alpha_powerec"],alpha_data[,'snr50_psycho'],method='pearson')
@@ -190,56 +199,69 @@ plot(alpha_data$alpha_powereo,alpha_data$snr50_psycho)
 plot(alpha_data$alpha_powerec,alpha_data$snr50_psycho)
 plot(alpha_data$ratio,alpha_data$snr80_psycho)
 plot(alpha_data$ratio,alpha_data$snr50_psycho)
-plot(alpha_power_peakec,alpha_data$snr80_psycho)
-plot(alpha_power_peakeo,alpha_data$snr80_psycho)
-plot(alpha_power_peakeo,alpha_data$snr50_psycho)
-plot(alpha_power_peakec,alpha_data$snr50_psycho)
-plot(alpha_power_peakeo,data$age)
-plot(alpha_power_peakec,data$age)
-plot(alpha_power_peakec,data$doso_global)
-plot(alpha_power_peakeo,data$doso_global)
-plot(alpha_power_peakec,data$dosoa_le)
-plot(alpha_power_peakeo,data$dosoa_le)
-plot(alpha_power_peakec,data$hhie_unaided_total)
-plot(alpha_power_peakeo,data$hhie_unaided_total)
-plot(alpha_power_peakec,data$hhie_aided_total)
-plot(alpha_power_peakeo,data$hhie_aided_total)
-plot(alpha_power_peakec,data$ssq12_score)
-plot(alpha_power_peakeo,data$ssq12_score)
-plot(alpha_power_peakeo,data$hint_srt_ists_snr50)
-plot(alpha_power_peakeo,data$hint_srt_ists_snr80)
-plot(alpha_power_peakeo,data$aphab_unaided_global)
-plot(alpha_power_peakec,data$aphab_unaided_global)
-plot(alpha_power_peakeo,data$aphab_aided_global)
-plot(alpha_power_peakec,data$aphab_aided_global)
-plot(alpha_power_peakeo,data$sadl_pe)
-plot(alpha_power_peakec,data$sadl_pe)
-plot(alpha_power_peakeo,data$sadl_sc)
-plot(alpha_power_peakec,data$sadl_sc)
-plot(alpha_power_peakeo,data$sadl_nf)
-plot(alpha_power_peakec,data$sadl_nf)
-plot(alpha_power_peakeo,data$sadl_pi)
-plot(alpha_power_peakec,data$sadl_pi)
-plot(alpha_power_peakeo,data$sadl_gl)
-plot(alpha_power_peakec,data$sadl_gl)
-plot(alpha_power_peakec,data$aldq_demand)
-plot(alpha_power_peakeo,data$aldq_demand)
-plot(alpha_power_peakeo,data$lseq_aided_cl)
-plot(alpha_power_peakeo,data$lseq_aided_se)
-plot(alpha_power_peakeo,data$lseq_aided_dq)
-plot(alpha_power_peakeo,data$lseq_aided_dl)
-plot(alpha_power_peakeo,data$lseq_unaided_dl)
-plot(alpha_power_peakeo,data$lseq_unaided_cl)
-plot(alpha_power_peakeo,data$lseq_unaided_se)
-plot(alpha_power_peakeo,data$lseq_unaided_dq)
-plot(alpha_power_peakeo,data$uwcpib_unaided_total)
-plot(alpha_power_peakec,data$uwcpib_unaided_total)
-plot(alpha_power_peakeo,data$anl_anl_sess01)
-plot(alpha_power_peakec,data$anl_anl_sess01)
-plot(alpha_power_peakeo,data$anl_anl_sess02)
-plot(alpha_power_peakec,data$anl_anl_sess02)
-plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_65_8)
-plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0)
+
+#Alpha_power_peak plots
+# Create list of variables to plot
+plot_x <- data.frame(alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo)
+
+plot_y <- data.frame(alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided,alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided)
+
+plot_variables <- list(plot_x,plot_y)
+
+# Function to plot variables
+plot_f <- function(x,y){
+    plot(x,y, col=rainbow(26), pch=18, xlab=colnames(plot_variables[[1]])[i],ylab=colnames(plot_variables[[2]])[i])
+    text(x,y+.02*max(y,na.rm=TRUE),labels=alpha_data$subid,cex=0.5)
+    text(.9*max(x,na.rm=TRUE),.9*max(y,na.rm=TRUE),paste('R2=',round(cor.test(x,y)[[4]],digits=8)))
+    text(.9*max(x,na.rm=TRUE),.8*max(y,na.rm=TRUE),paste('p=',round(cor.test(x,y)[[3]], digits=8)))   
+    
+}
+
+for (i in 1:length(plot_variables[[1]])){
+    plot_f(plot_variables[[1]][,i],plot_variables[[2]][,i])
+    
+}
+
+plot(alpha_power_peakec,data$hhie_unaided_total, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$hhie_unaided_total, col=1:26, pch=18)
+plot(alpha_power_peakec,data$hhie_aided_total, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$hhie_aided_total, col=1:26, pch=18)
+plot(alpha_power_peakec,data$ssq12_score, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$ssq12_score, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$hint_srt_ists_snr50, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$hint_srt_ists_snr80, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$aphab_unaided_global, col=1:26, pch=18)
+plot(alpha_power_peakec,data$aphab_unaided_global, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$aphab_aided_global, col=1:26, pch=18)
+plot(alpha_power_peakec,data$aphab_aided_global, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$sadl_pe, col=1:26, pch=18)
+plot(alpha_power_peakec,data$sadl_pe, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$sadl_sc, col=1:26, pch=18)
+plot(alpha_power_peakec,data$sadl_sc, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$sadl_nf, col=1:26, pch=18)
+plot(alpha_power_peakec,data$sadl_nf, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$sadl_pi, col=1:26, pch=18)
+plot(alpha_power_peakec,data$sadl_pi, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$sadl_gl, col=1:26, pch=18)
+plot(alpha_power_peakec,data$sadl_gl, col=1:26, pch=18)
+plot(alpha_power_peakec,data$aldq_demand, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$aldq_demand, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_aided_cl, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_aided_se, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_aided_dq, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_aided_dl, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_unaided_dl, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_unaided_cl, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_unaided_se, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$lseq_unaided_dq, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$uwcpib_unaided_total, col=1:26, pch=18)
+plot(alpha_power_peakec,data$uwcpib_unaided_total, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$anl_anl_sess01, col=1:26, pch=18)
+plot(alpha_power_peakec,data$anl_anl_sess01, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$anl_anl_sess02, col=1:26, pch=18)
+plot(alpha_power_peakec,data$anl_anl_sess02, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_65_8, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0, col=1:26, pch=18)
 
 
 plot(alpha_power_peakec,data$anl_anl_sess02)
@@ -250,10 +272,10 @@ plot(alpha_power_peakec,data$anl_anl_sess02)
 
 #Explore data
 
-for (i in 1:dim(occ_data)[1]){
-    plot(1:249,occ_data[i,2:250])
-    rect(30, 0, 50, 100, density = NULL, angle = 45)
-    text(50,2,SNR_thres$snr80_psycho[i])
-    text(50,3,SNR_thres$sub_id[i])
-    }
+#for (i in 1:dim(occ_data)[1]){
+#    plot(1:249,occ_data[i,2:250])
+#    rect(30, 0, 50, 100, density = NULL, angle = 45)
+#    text(50,2,SNR_thres$snr80_psycho[i])
+#    text(50,3,SNR_thres$sub_id[i])
+#    }
 
