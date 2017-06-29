@@ -26,15 +26,19 @@ data <- read.csv(file.choose(), header=TRUE)
 
 
 #Filter by subjects who partipated
-subject_info <- SNR$sub_id
+# Subject 1063 has abnormally high alpha power. Exclude
+# 
+subject_info <- SNR$sub_id[!(SNR$sub_id==1063|SNR$sub_id==1015)]
 data <- data[data$subject_id %in% subject_info,]
 data$left_air_conduction_500[19] <- data$left_air_conduction_750[19]
 data$left_air_conduction_1000[19] <- data$left_air_conduction_1500[19]
-data=data[-1,]
+
 
 ##Filter by audiobility (25-40 db HL SPL)
 
 #data <- data[rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])<41&rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])>24,]
+
+data$aud <- rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')],na.rm=TRUE)
 
 #Filter by age >50
 #age <- age[age$Subject.ID %in% audio$subject_id,]
@@ -48,110 +52,110 @@ data=data[-1,]
 SNR_thres <- SNR_thres[SNR_thres$sub_id %in% data$subject_id,]
 
 for (j in 1:2){
-eye_condition <- j
+    eye_condition <- j
 
 
-switch(eye_condition,
-filelist <- Sys.glob("*eo*")
-,filelist <- Sys.glob("*ec*"))
+    switch(eye_condition,
+    filelist <- Sys.glob("*eo*")
+    ,filelist <- Sys.glob("*ec*"))
 
-#filter filelist to age and audiobility thresholds
+    #filter filelist to age and audiobility thresholds
 
-filelist <- filelist[substring(filelist,1,4) %in% data$subject_id]
-
-
-switch(eye_condition,
-      eyes <- "eo"
-       ,eyes <- "ec")
+    filelist <- filelist[substring(filelist,1,4) %in% data$subject_id]
 
 
-#Create empty dataframe to fill
-data_fft <- data.frame(Date=as.Date(character()),
+    switch(eye_condition,
+        eyes <- "eo"
+        ,eyes <- "ec")
+
+
+    #Create empty dataframe to fill
+    data_fft <- data.frame(Date=as.Date(character()),
                  File=character(), 
                  User=numeric(), 
                  stringsAsFactors=FALSE)
-occ_data <- data.frame(Date=as.Date(character()),
+    occ_data <- data.frame(Date=as.Date(character()),
                    File=character(), 
                    User=numeric(), 
                    stringsAsFactors=FALSE)
-alpha_power_peak <- data.frame(Date=as.Date(character()),
+    alpha_power_peak <- data.frame(Date=as.Date(character()),
                        File=character(), 
                        User=numeric(), 
                        stringsAsFactors=FALSE)
 
-#load and add subject id
-for (i in 1:length(filelist)){
-     temp_data <- read.csv(filelist[i])
-     temp_data$subject_id <- substring(filelist[i],1,4)
-     temp_data <- temp_data[c(2003,1:2002)]
+    #load and add subject id
+    for (i in 1:length(filelist)){
+        temp_data <- read.csv(filelist[i])
+        temp_data$subject_id <- substring(filelist[i],1,4)
+        temp_data <- temp_data[c(2003,1:2002)]
      
-     data_fft <- rbind(data_fft,temp_data)
+        data_fft <- rbind(data_fft,temp_data)
      
-    # temp_occ <- colMeans(temp_data[c(31,10,9,18,34,33),3:2003])
-     temp_occ <- colMeans(temp_data[c(7,8,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53),3:2003])
-     temp_occ$subject_id <-as.numeric(substring(filelist[i],1,4))
-     temp_occ <- temp_occ[c(2002,1:2001)]
-     occ_data <- rbind(occ_data,temp_occ)
-}
+        # temp_occ <- colMeans(temp_data[c(31,10,9,18,34,33),3:2003])
+        temp_occ <- colMeans(temp_data[c(7,8,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53),3:2003])
+        temp_occ$subject_id <-as.numeric(substring(filelist[i],1,4))
+        temp_occ <- temp_occ[c(2002,1:2001)]
+        occ_data <- rbind(occ_data,temp_occ)
+    }
 
-##Average occipital channels 7,8,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53
-# 7-P4
-# 8-P3
-# 9-O2
-# 10-O1
-# 15-P8
-# 16-P7
-# 17-Pz
-# 25-CB1
-# 26-CB2
-# 31-Oz
-# 32-Iz
-# 33-PO4
-# 34-PO3
-# 48-P1
-# 49-POz
-# 50-P2
-# 51-P6
-# 53-P5
-
-
+    ##Average occipital channels 7,8,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53
+    # 7-P4
+    # 8-P3
+    # 9-O2
+    # 10-O1
+    # 15-P8
+    # 16-P7
+    # 17-Pz
+    # 25-CB1
+    # 26-CB2
+    # 31-Oz
+    # 32-Iz
+    # 33-PO4
+    # 34-PO3
+    # 48-P1
+    # 49-POz
+    # 50-P2
+    # 51-P6
+    # 53-P5
 
 
 
-##calculate alpha power
-#Alpha power between 7.5 and 12.5 hz. Sampling frequency of FFT data is 4hz
-#Alpha band
-alpha_band <- seq(30,50, by=1)
-
-alpha_power <- rowMeans(occ_data[,alpha_band], na.rm=TRUE)
-alpha_power <- data.frame(alpha_power)
-alpha_power$subid <- occ_data$subject_id
-alpha_power <- alpha_power[c(2,1)]
-
-#Calculate peak alpha power within Alpha band
-alpha_peak <- apply(occ_data[,alpha_band],1,max)
-alpha_peak <- data.frame(alpha_peak)
-alpha_peak$subid <- occ_data$subject_id
 
 
+    ##calculate alpha power
+    #Alpha power between 7.5 and 12.5 hz. Sampling frequency of FFT data is 4hz
+    #Alpha band
+    alpha_band <- seq(30,50, by=1)
     
-# Merge SNR threshold and alpha power datasets
-#Remove subjects without alphapower or SNR values
+    alpha_power <- rowMeans(occ_data[,alpha_band], na.rm=TRUE)
+    alpha_power <- data.frame(alpha_power)
+    alpha_power$subid <- occ_data$subject_id
+    alpha_power <- alpha_power[c(2,1)]
+    
+    #Calculate peak alpha power within Alpha band
+    alpha_peak <- apply(occ_data[,alpha_band],1,max)
+    alpha_peak <- data.frame(alpha_peak)
+    alpha_peak$subid <- occ_data$subject_id
+    
+    
+        
+    # Merge SNR threshold and alpha power datasets
+    #Remove subjects without alphapower or SNR values
+    
 
+    #combine datasets
+    alpha_data <- cbind(alpha_power,SNR_thres)
 
-#combine datasets
-alpha_data <- cbind(alpha_power,SNR_thres)
-
-assign(paste('alpha_data',eyes, sep=""),alpha_data)
-assign(paste('alpha_peak',eyes, sep=""),alpha_peak)
-
-#Identify peak frequency and calculate power within -2 hz:2 hz
-alpha_power_peak <- 1
-for (i in 1:length(alpha_peak[,1])){
+    assign(paste('alpha_data',eyes, sep=""),alpha_data)
+    assign(paste('alpha_peak',eyes, sep=""),alpha_peak)
+    
+    #Identify peak frequency and calculate power within -2 hz:2 hz
+    alpha_power_peak <- 1
+    for (i in 1:length(alpha_peak[,1])){
     
     alpha_power_peak[i] <- rowMeans(occ_data[i,(which.max(occ_data[i,alpha_band])+30-8):(which.max(occ_data[i,alpha_band])+30+8)])
-}
-assign(paste('alpha_power_peak',eyes, sep=""),alpha_power_peak)
+    }
+    assign(paste('alpha_power_peak',eyes, sep=""),alpha_power_peak)
 }
 
 
@@ -217,54 +221,63 @@ plot_f <- function(x,y){
     
 }
 
+par(mfrow=c(2,2))
 for (i in 1:length(plot_variables[[1]])){
     plot_f(plot_variables[[1]][,i],plot_variables[[2]][,i])
     
 }
 
-plot(alpha_power_peakec,data$hhie_unaided_total, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$hhie_unaided_total, col=1:26, pch=18)
-plot(alpha_power_peakec,data$hhie_aided_total, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$hhie_aided_total, col=1:26, pch=18)
-plot(alpha_power_peakec,data$ssq12_score, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$ssq12_score, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$hint_srt_ists_snr50, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$hint_srt_ists_snr80, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$aphab_unaided_global, col=1:26, pch=18)
-plot(alpha_power_peakec,data$aphab_unaided_global, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$aphab_aided_global, col=1:26, pch=18)
-plot(alpha_power_peakec,data$aphab_aided_global, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$sadl_pe, col=1:26, pch=18)
-plot(alpha_power_peakec,data$sadl_pe, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$sadl_sc, col=1:26, pch=18)
-plot(alpha_power_peakec,data$sadl_sc, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$sadl_nf, col=1:26, pch=18)
-plot(alpha_power_peakec,data$sadl_nf, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$sadl_pi, col=1:26, pch=18)
-plot(alpha_power_peakec,data$sadl_pi, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$sadl_gl, col=1:26, pch=18)
-plot(alpha_power_peakec,data$sadl_gl, col=1:26, pch=18)
-plot(alpha_power_peakec,data$aldq_demand, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$aldq_demand, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_aided_cl, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_aided_se, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_aided_dq, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_aided_dl, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_unaided_dl, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_unaided_cl, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_unaided_se, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$lseq_unaided_dq, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$uwcpib_unaided_total, col=1:26, pch=18)
-plot(alpha_power_peakec,data$uwcpib_unaided_total, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$anl_anl_sess01, col=1:26, pch=18)
-plot(alpha_power_peakec,data$anl_anl_sess01, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$anl_anl_sess02, col=1:26, pch=18)
-plot(alpha_power_peakec,data$anl_anl_sess02, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_65_8, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0, col=1:26, pch=18)
+plot(alpha_power_peakec,data$age, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$age, col=1:26, pch=18)
+cor.test(alpha_power_peakec,data$age)
+cor.test(alpha_power_peakeo,data$age)
 
-
-plot(alpha_power_peakec,data$anl_anl_sess02)
+plot(alpha_power_peakec,data$aud, col=1:26, pch=18)
+plot(alpha_power_peakeo,data$aud, col=1:26, pch=18)
+cor.test(alpha_power_peakec,data$aud)
+cor.test(alpha_power_peakeo,data$aud)
+#plot(alpha_power_peakeo,data$hhie_unaided_total, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$hhie_aided_total, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$hhie_aided_total, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$ssq12_score, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$ssq12_score, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$hint_srt_ists_snr50, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$hint_srt_ists_snr80, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$aphab_unaided_global, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$aphab_unaided_global, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$aphab_aided_global, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$aphab_aided_global, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$sadl_pe, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$sadl_pe, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$sadl_sc, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$sadl_sc, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$sadl_nf, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$sadl_nf, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$sadl_pi, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$sadl_pi, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$sadl_gl, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$sadl_gl, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$aldq_demand, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$aldq_demand, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_aided_cl, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_aided_se, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_aided_dq, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_aided_dl, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_unaided_dl, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_unaided_cl, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_unaided_se, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$lseq_unaided_dq, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$uwcpib_unaided_total, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$uwcpib_unaided_total, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$anl_anl_sess01, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$anl_anl_sess01, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$anl_anl_sess02, col=1:26, pch=18)
+#plot(alpha_power_peakec,data$anl_anl_sess02, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_65_8, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0, col=1:26, pch=18)
+#
+#
+#plot(alpha_power_peakec,data$anl_anl_sess02)
 
 
 
