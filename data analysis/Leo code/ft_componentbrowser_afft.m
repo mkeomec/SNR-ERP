@@ -59,7 +59,7 @@ if ~isfield(cfg, 'comp'),       cfg.comp     = 1:5;         end
 if ~isfield(cfg, 'trial'),      cfg.trial    = 1;           end
 if ~isfield(cfg, 'chantype'),   cfg.chantype = 'axial';     end   % for topo plotting
 if ~isfield(cfg, 'xspacing');   cfg.xspacing = 'lin';       end   % for powerspect plotting
-if ~isfield(cfg, 'freqmax');    cfg.freqmax  = 40;          end   % for powerspect plotting
+if ~isfield(cfg, 'freqmax');    cfg.freqmax  = 70;          end   % for powerspect plotting
 if ~isfield(cfg, 'xn');         cfg.xn       = [2 2 0 0];   end   % for xaxis plotting [time_course fft roundexp_time roundexp_fft]
 
 if numel(cfg.trial) > 1,
