@@ -1,7 +1,11 @@
 ##Analyzes EEG data that has been preprocessed in Matlab using Fieldtrip: ICA, epoching.
 
 setwd('E:/Google Drive/Project AE_SNR EEG ERP/Data/FFT/PSD')
-
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(corrplot)
+library(corrgram)
 ##Load in data
 
 #Select eyes open or closed condition
@@ -176,6 +180,33 @@ data$ANL <-  rowMeans(data.frame(data$anl_mcl_sess01,data$anl_mcl_sess02,data$an
 data$aphab_aided <- rowMeans(data.frame(data$aphab_aided_ec,data$aphab_aided_bn,data$aphab_aided_rv))
 data$aphab_unaided <- rowMeans(data.frame(data$aphab_unaided_ec,data$aphab_unaided_bn,data$aphab_unaided_rv))
 alpha_power_peak_ratio <- alpha_power_peakeo/alpha_power_peakec
+
+#Create new dataframes for merging
+colnames(data)[1] <- 'subid'
+all_data <- merge(alpha_data,data,by='subid')
+
+#Predictors for modeling 
+
+predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided')
+
+predictors <-all_data[predictor_labels]
+
+# Data visualization
+
+corrplot(predictors,method='color')
+corrgram(predictors,order=FALSE, lower.panel=panel.shade,
+         upper.panel=panel.pie, text.panel=panel.txt)
+
+#Model
+alpha_model <- lm(alpha_powereo~.,data=predictors)
+summary(alpha_model)
+
+
+
+
+
+
+
 
 
 cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr50_psycho'],method='pearson')
