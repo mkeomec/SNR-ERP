@@ -15,6 +15,9 @@ function alphapower
 
 %% Enter subject ID for subjects to be analyzed. Opens dialog box to enter
 % Subject id's
+
+Current_sub = (1015 1018 1019 1020 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1068 1069 1070 1071 1075 1076 1089 1093 1094 1095 1096 1097 1098 1099 1101 1102 1103 1106)
+Completed_sub=(1015 1018 1019 1020 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1069 1070 1071 1076 1089 1093 1094 1095 1096 1097 1101
 subid = inputdlg('Enter space-separated numbers. Subject IDs:')
 subid=strsplit(subid{1},' ')
 
