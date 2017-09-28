@@ -5,9 +5,12 @@ ft_defaults
 % dir = 'D:\Data\Ktremblay\subs\';
 % dir = 'E:\Google Drive\Project AE_SNR EEG ERP\Data\1033\'
 % dat = '1033_KDT_1-10-2017.cnt';
-
-subid = inputdlg('Enter space-separated numbers. Subject IDs:')
-subid=strsplit(subid{1},' ')
+Current_sub = [1015 1018 1019 1020 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1068 1069 1070 1071 1075 1076 1089 1093 1094 1095 1096 1097 1098 1099 1101 1102 1103 1106]
+analyzed_sub=[1015 1018 1019 1020 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1069 1070 1071 1076 1089 1093 1094 1095 1096 1097 1101]
+subid=Current_sub(~ismember(Current_sub,analyzed_sub))
+subid=num2cell(subid)
+% subid = inputdlg('Enter space-separated numbers. Subject IDs:')
+% subid=strsplit(subid{1},' ')
 [status,filelist]=system('dir /S/B *KDT_*.cnt');
 list = textscan(filelist, '%s', 'Delimiter', '\n');
 filelist=list{1,1}
@@ -15,6 +18,7 @@ filelist=list{1,1}
 % Start of analysis loop for each subject
 for i=1:length(subid)
     subjectid=(subid{i})
+    subjectid=num2str(subjectid)
     cell_list=regexp(filelist,subjectid);
     cellindex=find(not(cellfun('isempty',cell_list)));
     dataname=filelist(cellindex)

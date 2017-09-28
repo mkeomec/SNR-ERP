@@ -14,7 +14,7 @@ library(corrgram)
 #import SNR thresholds derived from batch_HINT in Matlab and slope_estimate.R
 print('Select SNR text file')
 SNR <- read.table(file.choose(), header=TRUE)
-SNR_thres <- SNR[c(1,9,10)]
+
 
 #Import Audiobility
 #print('Select Audiograms')
@@ -31,18 +31,34 @@ data <- read.csv(file.choose(), header=TRUE)
 
 #Filter by subjects who partipated
 # Subject 1063 has abnormally high alpha power. Exclude
+# Subject 1015 was much younger. 1106 is missing SNR data
 # 
-subject_info <- SNR$sub_id[!(SNR$sub_id==1063|SNR$sub_id==1015)]
-data <- data[data$subject_id %in% subject_info,]
-data$left_air_conduction_500[19] <- data$left_air_conduction_750[19]
-data$left_air_conduction_1000[19] <- data$left_air_conduction_1500[19]
+
+subject_info <- SNR$sub_id[!(SNR$sub_id==1063|SNR$sub_id==1015|SNR$sub_id==1106)]
+
 
 
 ##Filter by audiobility (25-40 db HL SPL)
+data <- data[data$subject_id %in% subject_info,]
+data$left_air_conduction_500[19] <- data$left_air_conduction_750[19]
+data$left_air_conduction_1000[19] <- data$left_air_conduction_1500[19]
+data$aud <- rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')],na.rm=TRUE)
+
+### SET AUDIOBILITY THRESHOLD
+data <- subset(data,aud>25&aud<40)
+
+# update subject_info
+
+subject_info <- data$subject_id
+
+# Update SNR_thres
+
+SNR_thres <- SNR[SNR$sub_id %in% subject_info,]
 
 #data <- data[rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])<41&rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')])>24,]
 
-data$aud <- rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')],na.rm=TRUE)
+
+
 
 #Filter by age >50
 #age <- age[age$Subject.ID %in% audio$subject_id,]
@@ -53,7 +69,7 @@ data$aud <- rowMeans(data[c('right_air_conduction_500','right_air_conduction_100
 #SNR_thres <- SNR_thres[SNR_thres$sub_id %in% data$subject_id,]
 
 #Filter SNR within data dataframe
-SNR_thres <- SNR_thres[SNR_thres$sub_id %in% data$subject_id,]
+#SNR_thres <- SNR[SNR_thres$sub_id %in% data$subject_id,]
 
 for (j in 1:2){
     eye_condition <- j
@@ -148,7 +164,7 @@ for (j in 1:2){
     
 
     #combine datasets
-    alpha_data <- cbind(alpha_power,SNR_thres)
+    alpha_data <- cbind(alpha_power,SNR_thres[,9:10])
 
     assign(paste('alpha_data',eyes, sep=""),alpha_data)
     assign(paste('alpha_peak',eyes, sep=""),alpha_peak)
@@ -166,12 +182,12 @@ for (j in 1:2){
 
 
 alpha_data <- cbind(alpha_dataec,alpha_dataeo$alpha_power,alpha_peakec$alpha_peak,alpha_peakeo$alpha_peak)
-colnames(alpha_data)[6] <- 'alpha_powereo'
+colnames(alpha_data)[5] <- 'alpha_powereo'
 colnames(alpha_data)[2] <- 'alpha_powerec'
-colnames(alpha_data)[7] <- 'alpha_peakec'
-colnames(alpha_data)[8] <- 'alpha_peakeo'
+colnames(alpha_data)[6] <- 'alpha_peakec'
+colnames(alpha_data)[7] <- 'alpha_peakeo'
 
-alpha_data <- alpha_data[,c(1:2,6,3:5)]
+alpha_data <- alpha_data[,c(1,3:4,2,5:7)]
 alpha_data$ratio <- alpha_data$alpha_powereo/alpha_data$alpha_powerec
 
 # Data variables
@@ -187,15 +203,44 @@ all_data <- merge(alpha_data,data,by='subid')
 
 #Predictors for modeling 
 
-predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided')
+predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided')
 
-predictors <-all_data[predictor_labels]
+predictors <- all_data[predictor_labels]
 
 # Data visualization
 
-corrplot(predictors,method='color')
+#corrplot(predictors,method='color')
 corrgram(predictors,order=FALSE, lower.panel=panel.shade,
+         upper.panel=panel.cor, text.panel=panel.txt)
+
+# Restrict variables 
+predictor2_labels <-  c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual')
+predictors2 <- all_data[predictor2_labels]
+
+corrgram(predictors2,order=FALSE, lower.panel=panel.shade,
          upper.panel=panel.pie, text.panel=panel.txt)
+
+corrgram(predictors2,order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.pie, text.panel=panel.txt)
+# plot alpha vs age 
+# Alpha eyes closed vs age and aud
+corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.conf, text.panel=panel.txt)
+
+# Alpha eyes open vs age and aud
+corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.conf, text.panel=panel.txt)
+
+# Alpha vs SNR 
+
+corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.conf, text.panel=panel.txt)
+
+corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.conf, text.panel=panel.txt)
+
+
+
 
 #Model
 alpha_model <- lm(alpha_powereo~.,data=predictors)
