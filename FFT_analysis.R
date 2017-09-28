@@ -45,7 +45,7 @@ data$left_air_conduction_1000[19] <- data$left_air_conduction_1500[19]
 data$aud <- rowMeans(data[c('right_air_conduction_500','right_air_conduction_1000','right_air_conduction_2000','left_air_conduction_500','left_air_conduction_1000','left_air_conduction_2000')],na.rm=TRUE)
 
 ### SET AUDIOBILITY THRESHOLD
-data <- subset(data,aud>25&aud<40)
+#data <- subset(data,aud>25&aud<40)
 
 # update subject_info
 
