@@ -376,4 +376,6 @@ model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo)
 model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo+alpha_power_peakec)
 model <- lm(alpha_power_peakeo~data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
 model <- lm(alpha_power_peakeo~data$sadl_gl)
+
+model <- lm(SNR_thres$snr50_psycho~alpha_power_peakec+alpha_power_peakeo+all_data$ratio+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
 summary(model)
