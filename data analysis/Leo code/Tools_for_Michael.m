@@ -13,7 +13,7 @@ cfg.dataset = [dir dat];
 cfg.continuous  = 'yes';
 cfg.bpfilter = 'yes';
 cfg.bpfreq = [.5 100]; 
-continuous_dat = ft_preprocessing(cfg);
+
 
 % extract trialinfo to split up into eyes open / eyes closed later
     cfg=[];
@@ -22,11 +22,17 @@ continuous_dat = ft_preprocessing(cfg);
     cfg.trialdef.eventtype  = 'trigger';
     cfg.trialdef.prestim    = 0;
     cfg.trialdef.poststim   = 120;
-    for_triggers=ft_definetrial(cfg); 
+    cfg=ft_definetrial(cfg); 
 
+    cfg.continuous  = 'yes';  
+    continuous_dat = ft_preprocessing(cfg);
     
-
+    
 %% split it up into 1s snippets to allow for a more informed ICA
+
+
+
+
 cfg = [];
 cfg.length               = 1;   % specify length of trials in seconds here
 split_dat               = ft_redefinetrial(cfg, continuous_dat);
