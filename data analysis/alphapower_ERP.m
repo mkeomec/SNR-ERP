@@ -1,13 +1,13 @@
 % clean up, call defaults
 clear
 ft_defaults
-
+cd 'e:\Google Drive\Project AE_SNR EEG ERP\Data'
 %% Subject selection
 % All the subjects with EEG collected
 Current_sub = [1015 1018 1019 1020 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1068 1069 1070 1071 1075 1076 1089 1093 1094 1095 1096 1097 1098 1099 1101 1102 1103 1106]
 
 % Subjects to exclude from analysis
-analyzed_sub=[1015 1018 1019 1021 1026 1027 1030 1033 1045 1046 1055 1061 1063 1068 1069 1070 1071 1075 1076 1089 1093 1094 1095 1096 1097 1098 1099 1101 1102 1103 1106]
+analyzed_sub=[1015 1018 1019 1020 1026 1027 1030 1033 1045 1046 1055 1061 1063 1068 1069 1070 1071 1075 1076 1089 1093 1094 1095 1096 1097 1098 1099 1101 1102 1103 1106]
 
 % Create list of subjects to analyze
 subid=Current_sub(~ismember(Current_sub,analyzed_sub))
@@ -54,6 +54,10 @@ for i=1:length(subid)
 
 save(strcat(subjectid,'_',date,'_','triggered.mat'), 'triggered_dat', '-v7.3');
 
+%% Play 'victory' music
+load handel.mat;
+soundsc(y, 2*Fs);
+
 %% do the ICA
 cfg=[];
 cfg.channel='all';
@@ -95,7 +99,7 @@ winlength = 1000;
 noverlap = 500;
 nfft = 4000;
 fs = 1000;
-for t=1:250
+for t=1:length(ICA_clean.trial)
     for e = 1:64
                 [w, f] = pwelch(ICA_clean.trial{t}(e,:),winlength, noverlap, nfft, fs);
                 PSD{t}(e,:) = w;
