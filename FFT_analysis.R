@@ -221,6 +221,12 @@ predictors2 <- all_data[predictor2_labels]
 corrgram(predictors2,order=FALSE, lower.panel=panel.shade,
          upper.panel=panel.pie, text.panel=panel.txt)
 
+predictor3_labels <-  c('aphab_aided','aphab_unaided','aldq_demand','alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','hint_srt_spshn_perceptual','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0')
+
+predictors3 <- all_data[predictor3_labels]
+corrgram(predictors3,order=FALSE, lower.panel=panel.shade,
+         upper.panel=panel.pie, text.panel=panel.txt)
+
 ## Look at SSQ values
 ssq12_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ssq12_response_001','ssq12_response_002','ssq12_response_003','ssq12_response_004','ssq12_response_005','ssq12_response_006','ssq12_response_007','ssq12_response_008','ssq12_response_009','ssq12_response_010','ssq12_response_011','ssq12_response_012','ssq12_score')
 
