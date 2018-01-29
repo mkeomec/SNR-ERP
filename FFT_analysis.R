@@ -1,11 +1,17 @@
 ##Analyzes EEG data that has been preprocessed in Matlab using Fieldtrip: ICA, epoching.
 
+#Directory Setup
 setwd('E:/Google Drive/Project AE_SNR EEG ERP/Data/FFT/PSD')
+
+#Load libraries
 library(dplyr)
 library(ggplot2)
 library(ggthemes)
 library(corrplot)
 library(corrgram)
+library(usdm)
+library(car)
+
 ##Load in data
 
 #Select eyes open or closed condition
@@ -227,18 +233,87 @@ predictors3 <- all_data[predictor3_labels]
 corrgram(predictors3,order=FALSE, lower.panel=panel.shade,
          upper.panel=panel.pie, text.panel=panel.txt)
 
+## Look at individual Aphab questions related to SNR
+# Group Aphab values by pragmatic subscale r=reversed
+
+# aphab1 = Ease of Communication (4,10,12,14,15,23)
+# aphab2 = Background noise (1r,6,7,16r,19r,24)
+# aphab3 = Reverberation (2,5,9r,11r,18,21r)
+# aphab4= Aversiveness (3,8,13,17,20,22)
+# 
+
+
+
+
+
+
+# 1) When I am in a crowded grocery store, talking with the cashier, I can follow the conversation. 
+# 5) I have trouble understanding the dialogue in a movie or at the theater. 
+# 6) When I am listening to the news on the car radio, and family members are talking, I have trouble hearing the news.
+# 7)When I'm at the dinner table with several people, and am trying to have a conversation with one person, understanding speech is difficult. 
+# 11) When I am in a theater watching a movie or play, and the people around me are whispering and rustling paper wrappers, I can still make out the dialogue.
+# 16) I can understand conversations even when several people are talking. 
+# 19)  I can communicate with others when we are in a crowd.
+# 24) I have trouble understanding others when an air conditioner or fan is on
+
+
+
+aphab_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')
+
+aphab <- all_data[aphab_labels]
+corrgram(aphab[,c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.pie, text.panel=panel.txt)
+
+
+## Look at individual HHIE questions related to SNR
+#6) Does a hearing problem cause you difficulty when attending a party?
+# 21) Does a hearing problem cause you difficulty when in a restaurant with relatives or friends?
+
+
+
+
 ## Look at SSQ values
+# 2) You are listening to someone talking to you, whle at the samte time trying to follow the news on TV. Can you follow what both people are saying?
+# 3) You are in conversation with one person in a room where there are many other people talking. Can you follow what the person you are talking to is saying?
+# 4) You are in a group of about five people in a busy restaurant. You can see everyone elese in the group. Can you follow the conversation?
+# 5) 
+
+# Group SSQ values by pragmatic subscale
+# SSQ1= Speech in noise (1,3,4) 
+# SSQ2= Multiple speech streams (2,5)
+# SSQ3= Localization (6)
+# SSQ4= Distant and movement (7,8)
+# SSQ5= Segregation (9)
+# SSQ6= Identification and sound (10)
+# SSQ7= Quality & naturalness (11)
+# SSQ8= Listening effort (12)
+# SSQ9= Speech in noise (1,3,4) Multiple speech streams (2,5)
+# SSQ10= Localization (6) Distant and movement (7,8)
+
+# add SSQ subscale variables
+all_data$SSQ1 <- rowMeans(all_data[,c('ssq12_response_001','ssq12_response_003','ssq12_response_004')])
+all_data$SSQ2 <- rowMeans(all_data[,c('ssq12_response_002','ssq12_response_005')])
+all_data$SSQ4 <- rowMeans(all_data[,c('ssq12_response_007','ssq12_response_008')])
+all_data$SSQ9 <- rowMeans(all_data[,c('ssq12_response_001','ssq12_response_003','ssq12_response_004','ssq12_response_002','ssq12_response_005')])
+all_data$SSQ4 <- rowMeans(all_data[,c('ssq12_response_006','ssq12_response_007','ssq12_response_008')])
+
 ssq12_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ssq12_response_001','ssq12_response_002','ssq12_response_003','ssq12_response_004','ssq12_response_005','ssq12_response_006','ssq12_response_007','ssq12_response_008','ssq12_response_009','ssq12_response_010','ssq12_response_011','ssq12_response_012','ssq12_score')
 
 ssq12 <- all_data[ssq12_labels]
-corrgram(ssq12,order=FALSE, lower.panel=panel.shade,
+corrgram(ssq12,order=FALSE, lower.panel=panel.pts,
          upper.panel=panel.pie, text.panel=panel.txt)
 
+
+
 ## Look at IOI values
+# GOLD STANDARD FOR HEARING AID SUCCESS
+# 7) Considering everything, how much has your present hearing aid(s) changed your enjoyment of life?
+
+
 ioi_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')
 ioi <- all_data[ioi_labels]
 corrgram(ioi,order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.pie, text.panel=panel.txt)
+         upper.panel=panel.cor, text.panel=panel.txt)
 
 
 corrgram(predictors2,order=FALSE, lower.panel=panel.pts,
@@ -246,6 +321,9 @@ corrgram(predictors2,order=FALSE, lower.panel=panel.pts,
 # plot alpha vs age 
 # Alpha eyes closed vs age and aud
 corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud')],order=FALSE, lower.panel=panel.pts,
+         upper.panel=panel.conf, text.panel=panel.txt)
+
+corrgram(all_data[,c('alpha_powerec','alpha_peakec','alpha_powereo','alpha_peakeo','aphab_aided','aphab_unaided','aldq_demand','age','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')],order=FALSE, lower.panel=panel.pts,
          upper.panel=panel.conf, text.panel=panel.txt)
 
 # Alpha eyes open vs age and aud
@@ -264,12 +342,90 @@ corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud','snr80_psycho','
 
 
 #Model
-alpha_model <- lm(alpha_powereo~.,data=predictors)
-summary(alpha_model)
+alpha_model_eo <- lm(alpha_powereo~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+summary(alpha_model_eo)
+
+alpha_model_eo <- lm(alpha_powereo~ioiha_response_002+ioiha_response_007,data=all_data)
+summary(alpha_model_eo)
+
+alpha_model_ec <- lm(alpha_powerec~ioiha_response_001+ioiha_response_002+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+summary(alpha_model_ec)
+
+alpha_model_ratio <- lm(alpha_power_peak_ratio ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+summary(alpha_model_ratio)
+
+alpha_model_ratio <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+summary(alpha_model_ratio)
+
+alpha_peakeo_model <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005,data=all_data)
+summary(alpha_peakeo_model)
+
+alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_007,data=all_data)
+summary(alpha_peakec_model)
+
+alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_003+ioiha_response_005+ioiha_response_007+ssq12_response_008,data=all_data)
+summary(alpha_peakec_model)
 
 
 
 
+## APHAB MODELING
+
+alpha_model.2 <- lm(alpha_powereo~aphab_unaided_001+aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007+aphab_unaided_008+aphab_unaided_009+aphab_unaided_010+aphab_unaided_011+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_024,data=all_data)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powereo~aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007 +aphab_unaided_009+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_022+aphab_unaided_024,data=all_data)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_007+aphab_unaided_019,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_power_peakec~aphab_aided_006+aphab_aided_016,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_power_peakeo~aphab_aided_006+aphab_aided_016,data=aphab)
+summary(alpha_model.2)
+vif(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_aided_001+aphab_aided_005+aphab_aided_006+aphab_aided_007+aphab_aided_011+aphab_aided_016+aphab_aided_019+aphab_aided_024,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powerec~aphab_aided_006+aphab_aided_016,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_016,data=aphab)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_powerec~aphab_unaided_006+aphab_unaided_016,data=aphab)
+summary(alpha_model.2)
+
+
+
+
+alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+summary(alpha_model.3)
+
+alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_005+ssq12_response_008+ssq12_response_009+ssq12_response_010,data=all_data)
+summary(alpha_model.3)
+
+
+alpha_model.4 <- lm(alpha_power_peakeo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+summary(alpha_model.4)
+
+alpha_model.5 <- lm(alpha_power_peakec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+summary(alpha_model.5)
+
+alpha_model.6 <- lm(alpha_powerec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+summary(alpha_model.6)
+
+alpha_model.7 <- lm(alpha_powereo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+summary(alpha_model.7)
 
 
 
@@ -399,4 +555,13 @@ model <- lm(alpha_power_peakeo~data$hhie_aided_total+data$lseq_unaided_cl+data$d
 model <- lm(alpha_power_peakeo~data$sadl_gl)
 
 model <- lm(SNR_thres$snr50_psycho~alpha_power_peakec+alpha_power_peakeo+all_data$ratio+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
+model <- lm(alpha_power_peakeo~SNR_thres$snr50_psycho+SNR_thres$snr80_psycho+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual+all_data$ssq12_response_003+all_data$ssq12_response_008)
+
+model <- lm(alpha_power_peakeo~ all_data$ssq12_response_011+all_data$ssq12_response_007+ all_data$ssq12_response_008)
+model <- lm(alpha_power_peakeo~ all_data$ssq12_response_001+all_data$ssq12_response_002+ all_data$ssq12_response_005+all_data$ssq12_response_008)
+
+
+cor.test(all_data$ssq12_response_008,all_data$ssq12_response_006)
 summary(model)
+
+
