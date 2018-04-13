@@ -8,8 +8,8 @@ library(R.matlab)
 #Setup 
 setwd('E:/Google Drive/Project AE_SNR EEG ERP/Data/FFT/PSD_ERP/Alpha_avg_trials')
 filelist <- Sys.glob("*Alpha_avg_trials*")
-subjects <- c('1015','1018','1019','1020','1021','1026','1027','1030','1033','1045','1046','1055','1061','1063','1064','1068','1069','1070','1071','1075','1076','1080','1081','1084','1089','1091','1093','1094','1095','1096','1097','1098','1099','1101','1102','1103','1105','1106')
-analyzed_subjects <- c('1000')
+subjects <- c('1015','1018','1019','1020','1021','1026','1027','1030','1033','1045','1046','1055','1061','1064','1063','1068','1069','1070','1071','1075','1076','1080','1081','1084','1089','1091','1093','1094','1095','1096','1097','1098','1099','1101','1102','1103','1105','1106')
+analyzed_subjects <- c('1015')
 subjects_to_analyze <- subjects[!subjects %in% analyzed_subjects]
 
 #Create empty data frames to populate later
@@ -43,12 +43,6 @@ for (h in 1:length(subjects_to_analyze)){
     alpha_peak <- data.frame(alpha_peak)
     
 
-
-
-    # Merge SNR threshold and alpha power datasets
-    #Remove subjects without alphapower or SNR values
-
-
     #combine datasets
  #   alpha_data <- cbind(alpha_power,SNR_thres[,9:10])
 
@@ -59,6 +53,7 @@ for (h in 1:length(subjects_to_analyze)){
 
         alpha_power_peak[i] <- rowMeans(PSD_data[i,(which.max(PSD_data[i,alpha_band])+30-8):(which.max(PSD_data[i,alpha_band])+30+8)])
     }
+    
     alpha_power_peak <- data.frame(alpha_power_peak)
     colnames(alpha_power_peak) <- current_subject
     comb_alpha_power_peak <- c(comb_alpha_power_peak,alpha_power_peak)
@@ -68,9 +63,18 @@ for (h in 1:length(subjects_to_analyze)){
     alpha_plot <- colMeans(PSD_data[c(31,10,9,18,34,33),2:120])
     alpha_plot <- data.frame(seq(from=0.25, to =29.75, by=0.25),alpha_plot)
     colnames(alpha_plot)[1]='freq'
-ggplot(data=alpha_plot)+geom_point(aes(x=freq,y=alpha_plot))
+    
+    alpha.plot<- ggplot(data=alpha_plot)+geom_point(aes(x=freq,y=alpha_plot))
+    print(alpha.plot)
 
 #Save PSD data
+    #Next 3 lines have not been tested
+    df_names <- substring(names(comb_alpha_power_peak),2)
+   
+    names(comb_alpha_power_peak) <- df_names
+    
+    write.csv(comb_alpha_power_peak, file = paste('All_subjects_Alpha_peak_ERP',Sys.Date(),'.csv',sep=""))
+    
 }
 
 # write.csv(mean_PSD_data, file = paste(current_subject,'_Alpha_avg_trials_',Sys.Date(),'.csv',sep=""))
