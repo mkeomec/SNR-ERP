@@ -210,37 +210,41 @@ alpha_ERP_occ <- data.frame(rownames(alpha_ERP),rowMeans(alpha_ERP[,c(7,8,9,10,1
 
 names(alpha_ERP_occ) <- c('subid','alpha_peak_ERP_occ')
 all_data <- merge(all_data,alpha_ERP_occ,by='subid')
+all_data$alpha_diff <- all_data$alpha_peakec-all_data$alpha_peak_ERP_occ
+
+
+plot(all_data$alpha_peak_ERP_occ,all_data$alpha_peakec)
 
 #Predictors for modeling 
 
-predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided','alpha_peak_ERP_occ')
+#predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided','alpha_peak_ERP_occ')
 
-predictors <- all_data[predictor_labels]
-cor.test(x = all_data$snr80_psycho,y = all_data$alpha_peak_ERP_occ)
+#predictors <- all_data[predictor_labels]
+#cor.test(x = all_data$snr80_psycho,y = all_data$alpha_peak_ERP_occ)
 
 ## Data visualization
 
 #corrplot(predictors,method='color')
-corrgram(predictors,order=FALSE, lower.panel=panel.shade,
-         upper.panel=panel.cor, text.panel=panel.txt)
+#corrgram(predictors,order=FALSE, lower.panel=panel.shade,
+ #        upper.panel=panel.cor, text.panel=panel.txt)
 
 # Restrict variables 
 ## Look at survey global scores
-predictor2_labels <-  c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','alpha_peak_ERP_occ')
+#predictor2_labels <-  c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','alpha_peak_ERP_occ')
 
-predictors2 <- all_data[predictor2_labels]
-corrgram(predictors2,order=FALSE, lower.panel=panel.shade,
-         upper.panel=panel.pie, text.panel=panel.txt)
+#predictors2 <- all_data[predictor2_labels]
+#corrgram(predictors2,order=FALSE, lower.panel=panel.shade,
+         #upper.panel=panel.pie, text.panel=panel.txt)
 
-cor.test(x = all_data$hint_srt_spshn_perceptual,y = all_data$alpha_peak_ERP_occ)
-cor.test(x = all_data$sadl_sc,y = all_data$alpha_peak_ERP_occ)
-cor.test(x = all_data$sadl_gl,y = all_data$alpha_peak_ERP_occ)
+#cor.test(x = all_data$hint_srt_spshn_perceptual,y = all_data$alpha_peak_ERP_occ)
+#cor.test(x = all_data$sadl_sc,y = all_data$alpha_peak_ERP_occ)
+#cor.test(x = all_data$sadl_gl,y = all_data$alpha_peak_ERP_occ)
 
-predictor3_labels <-  c('aphab_aided','aphab_unaided','aldq_demand','alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','hint_srt_spshn_perceptual','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0')
+#predictor3_labels <-  c('aphab_aided','aphab_unaided','aldq_demand','alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','hhie_aided_total', 'sadl_sc','sadl_gl','uwcpib_unaided_total','ANL','hint_srt_spshn_perceptual','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0')
 
-predictors3 <- all_data[predictor3_labels]
-corrgram(predictors3,order=FALSE, lower.panel=panel.shade,
-         upper.panel=panel.pie, text.panel=panel.txt)
+#predictors3 <- all_data[predictor3_labels]
+#corrgram(predictors3,order=FALSE, lower.panel=panel.shade,
+ #        upper.panel=panel.pie, text.panel=panel.txt)
 
 ## Look at individual Aphab questions related to SNR
 # Group Aphab values by pragmatic subscale r=reversed
@@ -267,11 +271,11 @@ corrgram(predictors3,order=FALSE, lower.panel=panel.shade,
 
 
 
-aphab_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')
+#aphab_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')
 
-aphab <- all_data[aphab_labels]
-corrgram(aphab[,c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.pie, text.panel=panel.txt)
+#aphab <- all_data[aphab_labels]
+#corrgram(aphab[,c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','aphab_unaided_001','aphab_aided_001','aphab_unaided_005','aphab_aided_005','aphab_unaided_006','aphab_aided_006','aphab_unaided_007','aphab_aided_007','aphab_unaided_011','aphab_aided_011','aphab_unaided_016','aphab_aided_016','aphab_unaided_019','aphab_aided_019','aphab_unaided_024','aphab_aided_024')],order=FALSE, lower.panel=panel.pts,
+#         upper.panel=panel.pie, text.panel=panel.txt)
 
 
 ## Look at individual HHIE questions related to SNR
@@ -695,6 +699,9 @@ summary(alpha_model.8)
 alpha_model.2 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+hint_srt_spshn_perceptual,data=all_data)
 summary(alpha_model.2)
 
-
 cor.test(all_data$alpha_peak_ERP_occ,all_data$hint_srt_spshn_perceptual)
 plot(all_data$alpha_peak_ERP_occ,all_data$hint_srt_spshn_perceptual)
+
+# Alpha power difference between baseline and ERP
+alpha_model.1 <- lm(alpha_diff~snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
+summary(alpha_model.1)
