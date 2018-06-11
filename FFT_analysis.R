@@ -100,8 +100,8 @@ for (j in 1:2){
      
         # temp_occ <- colMeans(temp_data[c(31,10,9,18,34,33),3:2003])
         
-        #temp_occ <- colMeans(temp_data[c(9,10,31),3:2003])
-        temp_occ <- colMeans(temp_data[c(7,8,9,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53),3:2003])
+        temp_occ <- colMeans(temp_data[c(9,10,31),3:2003])
+        #temp_occ <- colMeans(temp_data[c(7,8,9,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53),3:2003])
         
         
         temp_occ$subject_id <-as.numeric(substring(filelist[i],1,4))
@@ -205,19 +205,19 @@ alpha_ERP <- alpha_ERP[-c(1,2)]
 alpha_ERP <- t(alpha_ERP)
 colnames(alpha_ERP) <- c(1:64)
 
-#alpha_ERP_occ <- data.frame(rownames(alpha_ERP),rowMeans(alpha_ERP[,c(9,10,31)]))
-alpha_ERP_occ <- data.frame(rownames(alpha_ERP),rowMeans(alpha_ERP[,c(7,8,9,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53)]))
+alpha_ERP_occ <- data.frame(rownames(alpha_ERP),rowMeans(alpha_ERP[,c(9,10,31)]))
+#alpha_ERP_occ <- data.frame(rownames(alpha_ERP),rowMeans(alpha_ERP[,c(7,8,9,10,15,16,17,25,26,31,32,33,34,48,49,50,51,53)]))
 
 names(alpha_ERP_occ) <- c('subid','alpha_peak_ERP_occ')
 all_data <- merge(all_data,alpha_ERP_occ,by='subid')
-all_data$alpha_diff <- all_data$alpha_peakec-all_data$alpha_peak_ERP_occ
+all_data$alpha_diff <- all_data$alpha_peakeo-all_data$alpha_peak_ERP_occ
 
 
 plot(all_data$alpha_peak_ERP_occ,all_data$alpha_peakec)
 
 #Predictors for modeling 
 
-#predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global', 'dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided','alpha_peak_ERP_occ')
+#predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global+dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided','alpha_peak_ERP_occ')
 
 #predictors <- all_data[predictor_labels]
 #cor.test(x = all_data$snr80_psycho,y = all_data$alpha_peak_ERP_occ)
@@ -309,267 +309,267 @@ all_data$SSQ2 <- rowMeans(all_data[,c('ssq12_response_006','ssq12_response_007',
 all_data$SSQ3 <- rowMeans(all_data[,c('ssq12_response_009','ssq12_response_010','ssq12_response_011','ssq12_response_012')])
 
 
-ssq12_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ssq12_response_001','ssq12_response_002','ssq12_response_003','ssq12_response_004','ssq12_response_005','ssq12_response_006','ssq12_response_007','ssq12_response_008','ssq12_response_009','ssq12_response_010','ssq12_response_011','ssq12_response_012','ssq12_score','SSQ1','SSQ2','SSQ3')
+#ssq12_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ssq12_response_001','ssq12_response_002','ssq12_response_003','ssq12_response_004','ssq12_response_005','ssq12_response_006','ssq12_response_007','ssq12_response_008','ssq12_response_009','ssq12_response_010','ssq12_response_011','ssq12_response_012','ssq12_score','SSQ1','SSQ2','SSQ3')
 
-ssq12 <- all_data[ssq12_labels]
-corrgram(ssq12,order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.pie, text.panel=panel.txt)
+#ssq12 <- all_data[ssq12_labels]
+#corrgram(ssq12,order=FALSE, lower.panel=panel.pts,
+#         upper.panel=panel.pie, text.panel=panel.txt)
 
-ssq.model <- lm(alpha_power_peak_ratio~SSQ1+SSQ2+SSQ3,data=all_data)
-summary(ssq.model)
+#ssq.model <- lm(alpha_power_peak_ratio~SSQ1+SSQ2+SSQ3,data=all_data)
+#summary(ssq.model)
 
-ssq.model <- lm(alpha_power_peakec~SSQ1+SSQ2+SSQ3,data=all_data)
-summary(ssq.model)
+#ssq.model <- lm(alpha_power_peakec~SSQ1+SSQ2+SSQ3,data=all_data)
+#summary(ssq.model)
 
-ssq.model <- lm(alpha_power_peakeo~SSQ1+SSQ2+SSQ3,data=all_data)
-summary(ssq.model)
+#ssq.model <- lm(alpha_power_peakeo~SSQ1+SSQ2+SSQ3,data=all_data)
+#summary(ssq.model)
 
-ssq.model <- lm(alpha_power_peak_ratio~SSQ2,data=all_data)
-summary(ssq.model)
-plot(all_data$alpha_power_peak_ratio,all_data$SSQ2)
-cor.test(all_data$alpha_power_peak_ratio,all_data$SSQ2)
+#ssq.model <- lm(alpha_power_peak_ratio~SSQ2,data=all_data)
+#summary(ssq.model)
+#plot(all_data$alpha_power_peak_ratio,all_data$SSQ2)
+#cor.test(all_data$alpha_power_peak_ratio,all_data$SSQ2)
 
-ssq.model <- lm(alpha_power_peak_ratio~SSQ2,data=all_data)
-summary(ssq.model)
+#ssq.model <- lm(alpha_power_peak_ratio~SSQ2,data=all_data)
+#summary(ssq.model)
 
 #ALDQ model
 
-mod_aldq <- lm(aldq_demand~alpha_power_peak_ratio+alpha_power_peakec+alpha_power_peakeo+snr80_psycho+snr50_psycho+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
-summary(mod_aldq)
+#mod_aldq <- lm(aldq_demand~alpha_power_peak_ratio+alpha_power_peakec+alpha_power_peakeo+snr80_psycho+snr50_psycho+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
+#summary(mod_aldq)
 
 ## Look at IOI values
 # GOLD STANDARD FOR HEARING AID SUCCESS
 # 7) Considering everything, how much has your present hearing aid(s) changed your enjoyment of life?
 
 
-ioi_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')
-ioi <- all_data[ioi_labels]
-corrgram(ioi,order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.cor, text.panel=panel.txt)
+#ioi_labels <- c('alpha_powerec','alpha_powereo','alpha_peakec','alpha_peakeo','ratio','snr80_psycho','snr50_psycho','age','aud','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')
+#ioi <- all_data[ioi_labels]
+#corrgram(ioi,order=FALSE, lower.panel=panel.pts,
+ #        upper.panel=panel.cor, text.panel=panel.txt)
 
 
-corrgram(predictors2,order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.pie, text.panel=panel.txt)
+#corrgram(predictors2,order=FALSE, lower.panel=panel.pts,
+ #        upper.panel=panel.pie, text.panel=panel.txt)
 # plot alpha vs age 
 # Alpha eyes closed vs age and aud
-corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.conf, text.panel=panel.txt)
+#corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud')],order=FALSE, lower.panel=panel.pts,
+#         upper.panel=panel.conf, text.panel=panel.txt)
 
-corrgram(all_data[,c('alpha_powerec','alpha_peakec','alpha_powereo','alpha_peakeo','aphab_aided','aphab_unaided','aldq_demand','age','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.conf, text.panel=panel.txt)
+#corrgram(all_data[,c('alpha_powerec','alpha_peakec','alpha_powereo','alpha_peakeo','aphab_aided','aphab_unaided','aldq_demand','age','ioiha_response_001','ioiha_response_002','ioiha_response_003','ioiha_response_004','ioiha_response_005','ioiha_response_006','ioiha_response_007')],order=FALSE, lower.panel=panel.pts,
+#         upper.panel=panel.conf, text.panel=panel.txt)
 
 # Alpha eyes open vs age and aud
-corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.conf, text.panel=panel.txt)
+#corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud')],order=FALSE, lower.panel=panel.pts,
+   #      upper.panel=panel.conf, text.panel=panel.txt)
 
 # Alpha vs SNR 
 
-corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.conf, text.panel=panel.txt)
+#corrgram(all_data[,c('alpha_powereo','alpha_peakeo','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
+ #        upper.panel=panel.conf, text.panel=panel.txt)
 
-corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
-         upper.panel=panel.conf, text.panel=panel.txt)
+#corrgram(all_data[,c('alpha_powerec','alpha_peakec','age','aud','snr80_psycho','snr50_psycho')],order=FALSE, lower.panel=panel.pts,
+  #       upper.panel=panel.conf, text.panel=panel.txt)
 
 
 
 
 #Model
-alpha_model_eo <- lm(alpha_powereo~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
-summary(alpha_model_eo)
+#alpha_model_eo <- lm(alpha_powereo~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+#summary(alpha_model_eo)
 
-alpha_model_eo <- lm(alpha_powereo~ioiha_response_002+ioiha_response_007,data=all_data)
-summary(alpha_model_eo)
+#alpha_model_eo <- lm(alpha_powereo~ioiha_response_002+ioiha_response_007,data=all_data)
+#summary(alpha_model_eo)
 
-alpha_model_ec <- lm(alpha_powerec~ioiha_response_001+ioiha_response_002+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
-summary(alpha_model_ec)
+#alpha_model_ec <- lm(alpha_powerec~ioiha_response_001+ioiha_response_002+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+#summary(alpha_model_ec)
 
-alpha_model_ratio <- lm(alpha_power_peak_ratio ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
-summary(alpha_model_ratio)
+#alpha_model_ratio <- lm(alpha_power_peak_ratio ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+#summary(alpha_model_ratio)
 
-alpha_model_ratio <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
-summary(alpha_model_ratio)
+#alpha_model_ratio <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_006+ioiha_response_007,data=all_data)
+#summary(alpha_model_ratio)
 
-alpha_peakeo_model <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005,data=all_data)
-summary(alpha_peakeo_model)
+#alpha_peakeo_model <- lm(alpha_power_peakeo ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005,data=all_data)
+#summary(alpha_peakeo_model)
 
-alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_007,data=all_data)
-summary(alpha_peakec_model)
+#alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_002+ioiha_response_003+ioiha_response_004+ioiha_response_005+ioiha_response_007,data=all_data)
+#summary(alpha_peakec_model)
 
-alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_003+ioiha_response_005+ioiha_response_007+ssq12_response_008,data=all_data)
-summary(alpha_peakec_model)
+#alpha_peakec_model <- lm(alpha_power_peakec ~ioiha_response_001+ioiha_response_003+ioiha_response_005+ioiha_response_007+ssq12_response_008,data=all_data)
+#summary(alpha_peakec_model)
 
 
 
 
 ## APHAB MODELING
 
-alpha_model.2 <- lm(alpha_powereo~aphab_unaided_001+aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007+aphab_unaided_008+aphab_unaided_009+aphab_unaided_010+aphab_unaided_011+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_024,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powereo~aphab_unaided_001+aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007+aphab_unaided_008+aphab_unaided_009+aphab_unaided_010+aphab_unaided_011+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_024,data=all_data)
+#summary(alpha_model.2)
 
 #subscales
-alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_bn+aphab_unaided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_bn+aphab_unaided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_bn+aphab_unaided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_bn+aphab_unaided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakeo~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakec~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av,data=all_data)
+#summary(alpha_model.2)
 
 
-alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007 +aphab_unaided_008+aphab_unaided_009+aphab_unaided_010+aphab_unaided_011+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_020+aphab_unaided_021+aphab_unaided_022+aphab_unaided_023+aphab_unaided_024,data=all_data)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_unaided_002+aphab_unaided_003+aphab_unaided_004+aphab_unaided_005+aphab_unaided_006+aphab_unaided_007 +aphab_unaided_008+aphab_unaided_009+aphab_unaided_010+aphab_unaided_011+aphab_unaided_012+aphab_unaided_013+aphab_unaided_014+aphab_unaided_015+aphab_unaided_016+aphab_unaided_017+aphab_unaided_018+aphab_unaided_019+aphab_unaided_020+aphab_unaided_021+aphab_unaided_022+aphab_unaided_023+aphab_unaided_024,data=all_data)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_007+aphab_unaided_019,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_007+aphab_unaided_019,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakec~aphab_aided_006+aphab_aided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakec~aphab_aided_006+aphab_aided_016,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peakeo~aphab_aided_006+aphab_aided_016,data=aphab)
-summary(alpha_model.2)
-vif(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peakeo~aphab_aided_006+aphab_aided_016,data=aphab)
+#summary(alpha_model.2)
+#vif(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_aided_001+aphab_aided_005+aphab_aided_006+aphab_aided_007+aphab_aided_011+aphab_aided_016+aphab_aided_019+aphab_aided_024,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_power_peak_ratio~aphab_aided_001+aphab_aided_005+aphab_aided_006+aphab_aided_007+aphab_aided_011+aphab_aided_016+aphab_aided_019+aphab_aided_024,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powereo~aphab_aided_006+aphab_aided_016,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powerec~aphab_aided_006+aphab_aided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powerec~aphab_aided_006+aphab_aided_016,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powereo~aphab_unaided_006+aphab_unaided_016,data=aphab)
+#summary(alpha_model.2)
 
-alpha_model.2 <- lm(alpha_powerec~aphab_unaided_006+aphab_unaided_016,data=aphab)
-summary(alpha_model.2)
+#alpha_model.2 <- lm(alpha_powerec~aphab_unaided_006+aphab_unaided_016,data=aphab)
+#summary(alpha_model.2)
 
 #SSQ Modeling
 
 
-alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
-summary(alpha_model.3)
+#alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+#summary(alpha_model.3)
 
-alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_008+ssq12_response_009+ssq12_response_011,data=all_data)
-summary(alpha_model.3)
+#alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_008+ssq12_response_009+ssq12_response_011,data=all_data)
+#summary(alpha_model.3)
 
-alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_002+ssq12_response_003+ssq12_response_008,data=all_data)
-summary(alpha_model.3)
+#alpha_model.3 <- lm(alpha_power_peak_ratio~ssq12_response_002+ssq12_response_003+ssq12_response_008,data=all_data)
+#summary(alpha_model.3)
 
 
-alpha_model.4 <- lm(alpha_power_peakeo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
-summary(alpha_model.4)
+#alpha_model.4 <- lm(alpha_power_peakeo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+#summary(alpha_model.4)
 
-alpha_model.5 <- lm(alpha_power_peakec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
-summary(alpha_model.5)
+#alpha_model.5 <- lm(alpha_power_peakec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+#summary(alpha_model.5)
 
-alpha_model.6 <- lm(alpha_powerec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
-summary(alpha_model.6)
+#alpha_model.6 <- lm(alpha_powerec~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+#summary(alpha_model.6)
 
-alpha_model.7 <- lm(alpha_powereo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
-summary(alpha_model.7)
+#alpha_model.7 <- lm(alpha_powereo~ssq12_response_001+ssq12_response_002+ssq12_response_003+ssq12_response_004+ssq12_response_005+ssq12_response_006+ssq12_response_007+ssq12_response_008+ssq12_response_009+ssq12_response_010+ssq12_response_011+ssq12_response_012+ssq12_score,data=all_data)
+#summary(alpha_model.7)
 
 ###Beginning model
 
-alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+alpha_peakeo+alpha_peakec+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
-summary(alpha_model.8)
+#alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+alpha_peakeo+alpha_peakec+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
+#summary(alpha_model.8)
 
 
 ##### Current most interesting model
-alpha_model.8 <- lm(alpha_peak_ERP_occ~snr80_psycho+snr50_psycho+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+hint_srt_spshn_perceptual,data=all_data)
-summary(alpha_model.8)
+#alpha_model.8 <- lm(alpha_peak_ERP_occ~snr80_psycho+snr50_psycho+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+hint_srt_spshn_perceptual,data=all_data)
+#summary(alpha_model.8)
 
-alpha_model.8 <- lm(alpha_peak_ERP_occ~snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
-summary(alpha_model.8)
+#alpha_model.8 <- lm(alpha_peak_ERP_occ~snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
+#summary(alpha_model.8)
 
-alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+alpha_peakec+alpha_peakeo+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
-summary(alpha_model.8)
+#alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+alpha_peakec+alpha_peakeo+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
+#summary(alpha_model.8)
 
-alpha_model.8 <- lm(alpha_power_peak_ratio~alpha_peak_ERP_occ+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
-summary(alpha_model.8)
+#alpha_model.8 <- lm(alpha_power_peak_ratio~alpha_peak_ERP_occ+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
+#summary(alpha_model.8)
 
-plot(all_data$alpha_peak_ERP_occ,all_data$hint_srt_spshn_perceptual)
-
-
+#plot(all_data$alpha_peak_ERP_occ,all_data$hint_srt_spshn_perceptual)
 
 
-cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr50_psycho'],method='pearson')
-cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr80_psycho'],method='pearson')
-cor.test(alpha_data[,"alpha_powerec"],alpha_data[,'snr50_psycho'],method='pearson')
-cor.test(alpha_data[,"alpha_powerec"],alpha_data[,'snr80_psycho'],method='pearson')
-cor.test(alpha_power_peakeo,alpha_data$snr50_psycho)
-cor.test(alpha_power_peakeo,alpha_data$snr80_psycho)
-cor.test(alpha_power_peakeo,data$hint_srt_ists_snr80)
-cor.test(alpha_power_peakeo,data$doso_global)
-cor.test(alpha_power_peakec,data$doso_global)
-cor.test(alpha_power_peakeo,data$aphab_unaided_global)
 
-cor.test(alpha_power_peakeo,data$sadl_pe)
-cor.test(alpha_power_peakec,data$sadl_pe)
-cor.test(alpha_power_peakeo,data$sadl_gl)
-cor.test(alpha_power_peakeo,data$sadl_sc)
-cor.test(alpha_power_peakeo,data$aldq_demand,method='spearman')
-cor.test(alpha_power_peakeo,data$anl_anl_sess01)
-cor.test(alpha_power_peakec,data$anl_anl_sess01)
-cor.test(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0)
-cor.test(alpha_power_peakeo,data$dosoa_le)
-cor.test(alpha_power_peakec,data$dosoa_le)
 
-plot(alpha_data$alpha_powerec,alpha_data$snr80_psycho)
-plot(alpha_data$alpha_powereo,alpha_data$snr80_psycho)
-plot(alpha_data$alpha_powereo,alpha_data$snr50_psycho)
-plot(alpha_data$alpha_powerec,alpha_data$snr50_psycho)
-plot(alpha_data$ratio,alpha_data$snr80_psycho)
-plot(alpha_data$ratio,alpha_data$snr50_psycho)
+#cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr50_psycho'],method='pearson')
+#cor.test(alpha_data[,"alpha_powereo"],alpha_data[,'snr80_psycho'],method='pearson')
+#cor.test(alpha_data[,"alpha_powerec"],alpha_data[,'snr50_psycho'],method='pearson')
+#cor.test(alpha_data[,"alpha_powerec"],alpha_data[,'snr80_psycho'],method='pearson')
+#cor.test(alpha_power_peakeo,alpha_data$snr50_psycho)
+#cor.test(alpha_power_peakeo,alpha_data$snr80_psycho)
+#cor.test(alpha_power_peakeo,data$hint_srt_ists_snr80)
+#cor.test(alpha_power_peakeo,data$doso_global)
+#cor.test(alpha_power_peakec,data$doso_global)
+#cor.test(alpha_power_peakeo,data$aphab_unaided_global)
+
+#cor.test(alpha_power_peakeo,data$sadl_pe)
+#cor.test(alpha_power_peakec,data$sadl_pe)
+#cor.test(alpha_power_peakeo,data$sadl_gl)
+#cor.test(alpha_power_peakeo,data$sadl_sc)
+#cor.test(alpha_power_peakeo,data$aldq_demand,method='spearman')
+#cor.test(alpha_power_peakeo,data$anl_anl_sess01)
+#cor.test(alpha_power_peakec,data$anl_anl_sess01)
+#cor.test(alpha_power_peakeo,data$mlst_pct_av_aid_ists_75_0)
+#cor.test(alpha_power_peakeo,data$dosoa_le)
+#cor.test(alpha_power_peakec,data$dosoa_le)
+
+#plot(alpha_data$alpha_powerec,alpha_data$snr80_psycho)
+#plot(alpha_data$alpha_powereo,alpha_data$snr80_psycho)
+#plot(alpha_data$alpha_powereo,alpha_data$snr50_psycho)
+#plot(alpha_data$alpha_powerec,alpha_data$snr50_psycho)
+#plot(alpha_data$ratio,alpha_data$snr80_psycho)
+#plot(alpha_data$ratio,alpha_data$snr50_psycho)
 
 #Alpha_power_peak plots
 # Create list of variables to plot
-plot_x <- data.frame(alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio)
+#plot_x <- data.frame(alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec, alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakec,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peakeo,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio,alpha_power_peak_ratio)
 
-plot_y <- data.frame(alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided,alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided,alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided)
+#plot_y <- data.frame(alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided,alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided,alpha_data$snr80_psycho,alpha_data$snr50_psycho,data$doso_global, data$dosoa_sc,data$dosoa_le,data$dosoa_pl,data$dosoa_qu,data$dosoa_co,data$dosoa_us,data$hhie_unaided_total,data$hhie_aided_total, data$ssq12_score,data$aphab_unaided_global,data$aphab_aided_global,data$sadl_pe,data$sadl_sc,data$sadl_nf,data$sadl_pi,data$sadl_gl,data$aldq_demand,data$lseq_aided_cl,data$lseq_aided_se,data$lseq_aided_dq,data$lseq_aided_dl,data$lseq_unaided_dl,data$lseq_unaided_cl,data$lseq_unaided_se,data$lseq_unaided_dq,data$uwcpib_unaided_total,data$ANL,data$mlst_pct_av_aid_ists_65_8,data$mlst_pct_a_aid_ists_65_8,data$mlst_pct_a_uaid_ists_65_8,data$mlst_pct_av_uaid_ists_65_8,data$mlst_pct_a_aid_ists_75_0,data$mlst_pct_av_aid_ists_75_0,data$mlst_pct_a_uaid_ists_75_0,data$mlst_pct_av_uaid_ists_75_0,data$mlst_le_a_aid_ists_65_8,data$mlst_le_a_aid_ists_75_0,data$mlst_le_av_aid_ists_65_8,data$mlst_le_av_aid_ists_75_0,data$mlst_le_a_uaid_ists_65_8,data$mlst_le_a_uaid_ists_75_0,data$mlst_le_av_uaid_ists_65_8,data$mlst_le_av_uaid_ists_75_0,data$hint_srt_spshn_perceptual,data$aphab_aided,data$aphab_unaided)
 
-plot_variables <- list(plot_x,plot_y)
+#plot_variables <- list(plot_x,plot_y)
 
 # Function to plot variables
-plot_f <- function(x,y){
-    plot(x,y, col=rainbow(26), pch=18, xlab=colnames(plot_variables[[1]])[i],ylab=colnames(plot_variables[[2]])[i])
-    text(x,y+.02*max(y,na.rm=TRUE),labels=alpha_data$subid,cex=0.5)
-    text(.9*max(x,na.rm=TRUE),.9*max(y,na.rm=TRUE),paste('R2=',round(cor.test(x,y)[[4]],digits=8)))
-    text(.9*max(x,na.rm=TRUE),.8*max(y,na.rm=TRUE),paste('p=',round(cor.test(x,y)[[3]], digits=8)))   
+#plot_f <- function(x,y){
+  #  plot(x,y, col=rainbow(26), pch=18, xlab=colnames(plot_variables[[1]])[i],ylab=colnames(plot_variables[[2]])[i])
+  #  text(x,y+.02*max(y,na.rm=TRUE),labels=alpha_data$subid,cex=0.5)
+  #  text(.9*max(x,na.rm=TRUE),.9*max(y,na.rm=TRUE),paste('R2=',round(cor.test(x,y)[[4]],digits=8)))
+  #  text(.9*max(x,na.rm=TRUE),.8*max(y,na.rm=TRUE),paste('p=',round(cor.test(x,y)[[3]], digits=8)))   
     
-}
+#}
 
-par(mfrow=c(2,2))
-for (i in 1:length(plot_variables[[1]])){
-    plot_f(plot_variables[[1]][,i],plot_variables[[2]][,i])
+#par(mfrow=c(2,2))
+#for (i in 1:length(plot_variables[[1]])){
+ #   plot_f(plot_variables[[1]][,i],plot_variables[[2]][,i])
     
-}
+#}
 
-plot(alpha_power_peakec,data$age, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$age, col=1:26, pch=18)
-cor.test(alpha_power_peakec,data$age)
-cor.test(alpha_power_peakeo,data$age)
+#plot(alpha_power_peakec,data$age, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$age, col=1:26, pch=18)
+#cor.test(alpha_power_peakec,data$age)
+#cor.test(alpha_power_peakeo,data$age)
 
-plot(alpha_power_peakec,data$aud, col=1:26, pch=18)
-plot(alpha_power_peakeo,data$aud, col=1:26, pch=18)
-cor.test(alpha_power_peakec,data$aud)
-cor.test(alpha_power_peakeo,data$aud)
+#plot(alpha_power_peakec,data$aud, col=1:26, pch=18)
+#plot(alpha_power_peakeo,data$aud, col=1:26, pch=18)
+#cor.test(alpha_power_peakec,data$aud)
+#cor.test(alpha_power_peakeo,data$aud)
 #plot(alpha_power_peakeo,data$hhie_unaided_total, col=1:26, pch=18)
 #plot(alpha_power_peakec,data$hhie_aided_total, col=1:26, pch=18)
 #plot(alpha_power_peakeo,data$hhie_aided_total, col=1:26, pch=18)
@@ -627,27 +627,27 @@ cor.test(alpha_power_peakeo,data$aud)
 #    }
 
 #Modeling
-model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo)
-model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo+alpha_power_peakec)
-model <- lm(alpha_power_peakeo~data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
-model <- lm(alpha_power_peakeo~data$sadl_gl)
+#model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo)
+#model <- lm(SNR_thres$snr80_psycho~alpha_power_peakeo+alpha_power_peakec)
+#model <- lm(alpha_power_peakeo~data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
+#model <- lm(alpha_power_peakeo~data$sadl_gl)
 
-model <- lm(SNR_thres$snr50_psycho~alpha_power_peakec+alpha_power_peakeo+all_data$ratio+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
-model <- lm(alpha_power_peakeo~SNR_thres$snr50_psycho+SNR_thres$snr80_psycho+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual+all_data$ssq12_response_003+all_data$ssq12_response_008)
+#model <- lm(SNR_thres$snr50_psycho~alpha_power_peakec+alpha_power_peakeo+all_data$ratio+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual)
+#model <- lm(alpha_power_peakeo~SNR_thres$snr50_psycho+SNR_thres$snr80_psycho+data$hhie_aided_total+data$lseq_unaided_cl+data$doso_global+data$dosoa_pl+data$sadl_pe+data$sadl_gl+data$hint_srt_spshn_perceptual+all_data$ssq12_response_003+all_data$ssq12_response_008)
 
-model <- lm(alpha_power_peakeo~ all_data$ssq12_response_011+all_data$ssq12_response_007+ all_data$ssq12_response_008)
-model <- lm(alpha_power_peakeo~ all_data$ssq12_response_001+all_data$ssq12_response_002+ all_data$ssq12_response_005+all_data$ssq12_response_008)
+#model <- lm(alpha_power_peakeo~ all_data$ssq12_response_011+all_data$ssq12_response_007+ all_data$ssq12_response_008)
+#model <- lm(alpha_power_peakeo~ all_data$ssq12_response_001+all_data$ssq12_response_002+ all_data$ssq12_response_005+all_data$ssq12_response_008)
 
 
-cor.test(all_data$ssq12_response_008,all_data$ssq12_response_006)
-summary(model)
+#cor.test(all_data$ssq12_response_008,all_data$ssq12_response_006)
+#summary(model)
 
 
 # Analysis 3-30-2018
 
 ##Resting state Alpha power
 #Beginning model
-# Alpha peak eyes open
+# Alpha peak eyes open 
 alpha_model.8 <- lm(alpha_peakeo~snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
 summary(alpha_model.8)
 
@@ -674,7 +674,7 @@ summary(alpha_model.8)
 
 
 ## Alpha power during ERP
-
+# Behavioral Measures
 #Beginning model
 
 alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+alpha_peakeo+alpha_peakec+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_bn+aphab_aided_rv+aphab_aided_av+hint_srt_spshn_perceptual,data=all_data)
@@ -689,9 +689,77 @@ summary(alpha_model.8)
 alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+snr50_psycho+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_aided_ec,data=all_data)
 summary(alpha_model.8)
 
+plot(all_data$alpha_peak_ERP_occ,all_data$snr50_psycho)
+plot(all_data$alpha_peak_ERP_occ,all_data$snr80_psycho)
+plot(all_data$alpha_peak_ERP_occ,all_data$aud)
+plot(all_data$alpha_peak_ERP_occ,all_data$aphad_aided_ec)
+
+## Alpha power during ERP compared to self-report measures
+
+alpha_model.8 <- lm(alpha_peak_ERP_occ~doso_global+dosoa_sc+dosoa_le+dosoa_pl+dosoa_qu+dosoa_co+dosoa_us+hhie_unaided_total+hhie_aided_total+ssq12_score+aphab_unaided_global+aphab_aided_global+sadl_pe+sadl_sc+sadl_nf+sadl_pi+sadl_gl+aldq_demand+lseq_aided_cl+lseq_aided_se+lseq_aided_dq+lseq_unaided_dl+lseq_unaided_cl+lseq_unaided_se+lseq_unaided_dq+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_rv,data=all_data)
+summary(alpha_model.8)
+
+#Backward Model Selection
+
+alpha_model.8 <- lm(alpha_peak_ERP_occ~doso_global+dosoa_sc+dosoa_le+dosoa_pl+dosoa_qu+dosoa_co+dosoa_us+hhie_unaided_total+hhie_aided_total+ssq12_score+sadl_pe+sadl_sc+sadl_nf+sadl_pi+sadl_gl+aldq_demand+lseq_aided_cl+lseq_aided_se+lseq_aided_dq+lseq_unaided_dl+lseq_unaided_cl+lseq_unaided_se+lseq_unaided_dq+aphab_unaided_global+aphab_aided_global,data=all_data)
+summary(alpha_model.8)
+
+# Model testing
+
+alpha_model.1 <- lm(alpha_peak_ERP_occ~doso_global+dosoa_co+ssq12_score+aphab_unaided_global+aphab_aided_global+sadl_pe+sadl_nf+sadl_pi+aldq_demand,data=all_data)
+summary(alpha_model.1)
+
+#Current best model
+alpha_model.1 <- lm(alpha_peak_ERP_occ~doso_global+dosoa_co+ssq12_score++sadl_pe+sadl_nf+sadl_pi+aldq_demand+aphab_unaided_ec+aphab_unaided_bn+aphab_unaided_rv+aphab_unaided_av+aphab_aided_ec+aphab_aided_rv+aphab_aided_bn+aphab_aided_av,data=all_data)
+summary(alpha_model.1)
+vif(alpha_model.1)
+
+# Alpha power during ERP compared to behavioral and self-report measures
+
+alpha_model.2 <- lm(alpha_peak_ERP_occ~alpha_peakeo+alpha_peakec+snr80_psycho+snr50_psycho+aud+SSQ1+SSQ2+SSQ3+hint_srt_spshn_perceptual+doso_global+hhie_unaided_total+hhie_aided_total+sadl_gl+aldq_demand+lseq_aided_cl+lseq_aided_se+lseq_aided_dq+lseq_unaided_dl+lseq_unaided_cl+lseq_unaided_se+lseq_unaided_dq+aphab_unaided_global+aphab_aided_global,data=all_data)
+summary(alpha_model.2)
+
+# Backward Model Selection
+
+alpha_model.2 <- lm(alpha_peak_ERP_occ~alpha_peakeo+snr80_psycho+aud+SSQ1+SSQ2+SSQ3+hint_srt_spshn_perceptual+doso_global+hhie_aided_total+sadl_gl+aldq_demand+lseq_aided_cl+lseq_aided_se+lseq_aided_dq+lseq_unaided_dl+lseq_unaided_cl+lseq_unaided_se+lseq_unaided_dq+aphab_unaided_global+aphab_aided_global,data=all_data)
+summary(alpha_model.2)
+
+# Multicollinearity selection VIF >5
+
+alpha_model.2 <- lm(alpha_peak_ERP_occ~snr80_psycho+doso_global+aldq_demand+aphab_aided_global,data=all_data)
+summary(alpha_model.2)
+vif(alpha_model.2)
+
+#Forward Selection
+
+alpha_model.2 <- lm(alpha_peak_ERP_occ~snr50_psycho+aud+aphab_aided_global+aldq_demand,data=all_data)
+summary(alpha_model.2)
+
+##### Current best model #####
+alpha_model.2 <- lm(alpha_peak_ERP_occ~snr50_psycho+aud+aphab_aided_global+aldq_demand,data=all_data)
+summary(alpha_model.2)
+
+
+
+plot(all_data$alpha_peak_ERP_occ,all_data$snr50_psycho)
+abline(lm(all_data$snr50_psycho~all_data$alpha_peak_ERP_occ))
+
+plot(all_data$alpha_peak_ERP_occ,all_data$snr80_psycho)
+abline(lm(all_data$snr80_psycho~all_data$alpha_peak_ERP_occ))
+
+plot(all_data$alpha_peak_ERP_occ,all_data$aud)
+abline(lm(all_data$aud~all_data$alpha_peak_ERP_occ))
+
+plot(all_data$alpha_peak_ERP_occ,all_data$aphad_aided_global)
+abline(lm(all_data$aphab_aided_global~all_data$alpha_peak_ERP_occ))
+
+
+plot(all_data$alpha_peak_ERP_occ,all_data$aldq_demand)
+abline(lm(all_data$aldq_demand~all_data$alpha_peak_ERP_occ))
+
 # Occipital 
 #Beginning model
-alpha_model.8 <- lm(alpha_peak_ERP_occ~alpha_power_peak_ratio+snr50_psycho+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_aided_ec,data=all_data)
+alpha_model.8 <- lm(alpha_peak_ERP_occ~snr50_psycho+aud+aphab_unaided_bn+aphab_unaided_rv+aphab_aided_ec,data=all_data)
 summary(alpha_model.8)
 
 # Occipital and parietal lobes 
