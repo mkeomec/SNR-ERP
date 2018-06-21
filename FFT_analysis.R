@@ -215,6 +215,11 @@ all_data$alpha_diff <- all_data$alpha_peakeo-all_data$alpha_peak_ERP_occ
 
 plot(all_data$alpha_peak_ERP_occ,all_data$alpha_peakec)
 
+# Add Aphab benefit. Unaided global minus aided global
+
+all_data$aphab_benefit <- all_data$aphab_unaided_global-all_data$aphab_aided_global
+
+
 #Predictors for modeling 
 
 #predictor_labels <-  c('subid','alpha_powerec','alpha_powereo','ratio','snr80_psycho','snr50_psycho','doso_global+dosoa_sc','dosoa_le','dosoa_pl','dosoa_qu','dosoa_co','dosoa_us','hhie_unaided_total','hhie_aided_total', 'ssq12_score','aphab_unaided_global','aphab_aided_global','sadl_pe','sadl_sc','sadl_nf','sadl_pi','sadl_gl','aldq_demand','lseq_aided_cl','lseq_aided_se','lseq_aided_dq','lseq_aided_dl','lseq_unaided_dl','lseq_unaided_cl','lseq_unaided_se','lseq_unaided_dq','uwcpib_unaided_total','ANL','mlst_pct_av_aid_ists_65_8','mlst_pct_a_aid_ists_65_8','mlst_pct_a_uaid_ists_65_8','mlst_pct_av_uaid_ists_65_8','mlst_pct_a_aid_ists_75_0','mlst_pct_av_aid_ists_75_0','mlst_pct_a_uaid_ists_75_0','mlst_pct_av_uaid_ists_75_0','mlst_le_a_aid_ists_65_8','mlst_le_a_aid_ists_75_0','mlst_le_av_aid_ists_65_8','mlst_le_av_aid_ists_75_0','mlst_le_a_uaid_ists_65_8','mlst_le_a_uaid_ists_75_0','mlst_le_av_uaid_ists_65_8','mlst_le_av_uaid_ists_75_0','hint_srt_spshn_perceptual','aphab_aided','aphab_unaided','alpha_peak_ERP_occ')
@@ -733,6 +738,9 @@ vif(alpha_model.2)
 #Forward Selection
 
 alpha_model.2 <- lm(alpha_peak_ERP_occ~snr50_psycho+aud+aphab_aided_global+aldq_demand,data=all_data)
+summary(alpha_model.2)
+
+alpha_model.2 <- lm(alpha_peak_ERP_occ~snr50_psycho+aud+aphab_aided_ec+aldq_demand,data=all_data)
 summary(alpha_model.2)
 
 ##### Current best model #####
